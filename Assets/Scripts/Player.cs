@@ -37,5 +37,15 @@ public class Player : MonoBehaviour {
 			rigidbody.AddForce (new Vector3(0.0f, jumpForce, 0.0f));	
 		}
 
+		if(Input.GetKey(KeyCode.LeftArrow)){
+			transform.Translate(-transform.right * Time.deltaTime);
+		}
+
+		if(Input.GetKey(KeyCode.RightArrow)){
+			transform.Translate(transform.right * Time.deltaTime);
+		}
+
+
+
 	}
 }
