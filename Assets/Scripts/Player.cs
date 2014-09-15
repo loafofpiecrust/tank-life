@@ -11,6 +11,9 @@ public class Player : MonoBehaviour {
 
 	public float moveSpeed = 200.0f;
 	public float jumpForce = 400.0f;
+	public float turnSpeed = 10.0f;
+
+	bool onGround = true;
 
 	// Use this for initialization
 	void Start () {
@@ -23,18 +26,18 @@ public class Player : MonoBehaviour {
 			armor += armorRegen * Time.deltaTime;
 		}
 
-		if(fuel>0.0f){
-
+		if(fuel > 0.0f) {
 			float hor = Input.GetAxis ("Horizontal");
 			float ver = Input.GetAxis ("Vertical");
 
-			rigidbody.AddForce(new Vector3(hor, ver, 0.0f));
-
+			rigidbody.AddForce(transform.forward * (ver*moveSpeed));
+			transform.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
 		}
 
 
-		if (Input.GetButtonDown ("Jump")) {
-			rigidbody.AddForce (new Vector3(0.0f, jumpForce, 0.0f));	
+		if (Input.GetButtonDown ("Jump") && onGround) {
+			rigidbody.AddForce (new Vector3(0.0f, jumpForce, 0.0f));
+			onGround = false;
 		}
 
 		if(Input.GetKey(KeyCode.LeftArrow)){
@@ -47,5 +50,9 @@ public class Player : MonoBehaviour {
 
 
 
+	}
+
+	void OnCollisionEnter(Collision collision) {
+		onGround = true;
 	}
 }
