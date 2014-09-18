@@ -2,7 +2,7 @@
 using System.Collections;
 
 internal class Player : MonoBehaviour {
-
+		// Non-User Editable
 	internal float armor = 100.0f;
 	internal float health = 100.0f;
 	internal float armorRegen = 3.0f;
@@ -10,6 +10,8 @@ internal class Player : MonoBehaviour {
 	internal float regenTime = 0.0f;
 	internal float fuel = 50.0f;
 
+
+	//User Editable
 	public float moveSpeed = 200.0f;
 	public float jumpForce = 400.0f;
 	public float turnSpeed = 10.0f;
@@ -78,7 +80,6 @@ internal class Player : MonoBehaviour {
 			FireCannon ();
 		}
 	}
-
 	void OnCollisionEnter(Collision collision) {
 		onGround = true;
 	}
