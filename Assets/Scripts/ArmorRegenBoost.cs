@@ -17,7 +17,7 @@ public class ArmorRegenBoost : Pickup {
 	}
 
 	internal override void DoEffect(Player p){
-
-
+		p.armorRegenBonus = amount;
+		p.regenTime = time;
 	}
 }

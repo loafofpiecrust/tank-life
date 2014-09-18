@@ -8,11 +8,13 @@ internal class Player : MonoBehaviour {
 	internal float armorRegen = 3.0f;
 	internal float armorRegenBonus = 0.0f;
 	internal float regenTime = 0.0f;
+
 	internal float fuel = 50.0f;
 
 
 	//User Editable
-	public float moveSpeed = 200.0f;
+	public float moveSpeed = 100.0f;
+	public float maxMoveSpeed = 200.0f;
 	public float jumpForce = 400.0f;
 	public float turnSpeed = 10.0f;
 
@@ -20,17 +22,23 @@ internal class Player : MonoBehaviour {
 	public float bulletSpeed = 10.0f;
 
 	bool onGround = true;
-	Transform cannonHolder = null;
-	Transform cannon = null;
-	Transform cannonBarrel = null;
+	public Transform cannonHolder = null;
+	public Transform cannon = null;
+	public Transform cannonBarrel = null;
+
+	public Transform frontAxis;
+	public WheelCollider wheelTL;
+	public WheelCollider wheelTR;
+	public WheelCollider wheelBL;
+	public WheelCollider wheelBR;
 
 	// Use this for initialization
 	void Start () {
-		cannonHolder = transform.FindChild ("CannonHolder");
+	/*	cannonHolder = transform.FindChild ("CannonHolder");
 		cannon = cannonHolder.FindChild("Cannon");
 		if (cannon) {
 			cannonBarrel = cannon.FindChild ("Barrel");
-		}
+		}*/
 	}
 	
 	// Update is called once per frame
@@ -51,8 +59,23 @@ internal class Player : MonoBehaviour {
 		if(fuel > 0.0f) {
 			ver = Input.GetAxis ("Vertical");
 			hor = Input.GetAxis ("Horizontal");
-			rigidbody.AddForce(transform.forward * (ver*moveSpeed));
-			transform.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
+		/*	if (rigidbody.velocity.x < maxMoveSpeed) {
+				wheelTR.AddForce(new Vector3(transform.forward.x * (ver*moveSpeed), 0.0f, 0.0f));
+				wheelTL.AddForce(new Vector3(transform.forward.x * (ver*moveSpeed), 0.0f, 0.0f));
+			}*/
+			if (ver != 0.0f) {
+				wheelTR.motorTorque = ver * moveSpeed;
+				wheelTL.motorTorque = ver * moveSpeed;
+			}
+			else {
+				wheelTR.motorTorque = 0.0f;
+				wheelTL.motorTorque = 0.0f;
+			}
+
+		//	if(hor != 0.0f) transform.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
+			if(hor != 0.0f) {
+				frontAxis.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
+			}
 		}
 
 
@@ -64,7 +87,7 @@ internal class Player : MonoBehaviour {
 		if (cannon) {
 			hor = Input.GetAxis ("CannonHorizontal");
 			ver = Input.GetAxis ("CannonVertical");
-			cannon.Rotate (new Vector3(0.0f, 0.0f, ver * turnSpeed * Time.deltaTime));
+			cannon.Rotate (new Vector3(ver * turnSpeed * Time.deltaTime, 0.0f, 0.0f));
 			cannonHolder.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
 		//	cannonBarrel.RotateAround (cannon.position, new Vector3(ver, hor, 0.0f), turnSpeed * Time.deltaTime);
 			cannon.eulerAngles = new Vector3(
