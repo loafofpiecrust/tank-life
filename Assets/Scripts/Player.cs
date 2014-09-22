@@ -2,7 +2,7 @@
 using System.Collections;
 
 internal class Player : MonoBehaviour {
-		// Non-User Editable
+	// Non-User Editable
 	internal float armor = 100.0f;
 	internal float health = 100.0f;
 	internal float armorRegen = 3.0f;
@@ -15,7 +15,7 @@ internal class Player : MonoBehaviour {
 	public float moveSpeed = 200.0f;
 	public float jumpForce = 400.0f;
 	public float turnSpeed = 10.0f;
-
+	public GameObject inv;
 	public GameObject bullet;
 	public float bulletSpeed = 10.0f;
 
@@ -45,6 +45,21 @@ internal class Player : MonoBehaviour {
 			regenTime = -1.0f;
 			armorRegenBonus = 0.0f;
 		}
+
+		if(health<=0.0f){
+			Destroy(this);
+		}
+
+		if(Input.GetKeyDown(KeyCode.LeftShift)){
+			Mine mine = inv.GetComponentInChildren<Mine>();
+			if(mine){
+				mine.transform.parent = null;
+				mine.transform.Translate (-transform.forward * 3.0f);
+				mine.renderer.enabled = true;
+				mine.collider.enabled = true;
+			}
+		}
+
 		
 		float hor;
 		float ver;
@@ -53,6 +68,9 @@ internal class Player : MonoBehaviour {
 			hor = Input.GetAxis ("Horizontal");
 			rigidbody.AddForce(transform.forward * (ver*moveSpeed));
 			transform.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
+			if(ver != 0.0f || hor != 0.0f){
+				fuel -= Time.deltaTime;
+			}
 		}
 
 
