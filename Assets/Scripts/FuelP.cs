@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Armor : Pickup {
+public class FuelP : Pickup{
 
 	public float amount;
+
 
 	// Use this for initialization
 	void Start () {
@@ -15,7 +16,9 @@ public class Armor : Pickup {
 	
 	}
 
-	internal override void DoEffect(Player p){
-		p.armor += amount;
+	internal override bool DoEffect(Player p){
+		p.fuel += amount;
+		return false;
 	}
+
 }
