@@ -1,10 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ArmorRegenBoost : Pickup {
-
-	public int time;
-	public float amount;
+public class Flag : Pickup {
 
 	// Use this for initialization
 	void Start () {
@@ -16,9 +13,7 @@ public class ArmorRegenBoost : Pickup {
 	
 	}
 
-	internal override bool DoEffect(Player p){
-		p.armorRegenBonus = amount;
-		p.regenTime = time;
+	internal override bool DoEffect (Player p){
 		return false;
 	}
 }

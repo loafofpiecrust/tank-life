@@ -4,7 +4,7 @@ using System.Collections;
 public class Mine : Pickup{
 
 	public int dmg;
-	public int colCount;
+	internal int colCount = 0;
 	
 	// Use this for initialization
 	void Start () {
@@ -18,14 +18,14 @@ public class Mine : Pickup{
 
 	internal override bool DoEffect(Player p){
 		if (colCount == 0){
-			this.collider.enabled = false;
-			this.renderer.enabled = false;
 			colCount++;
-			return true;
+			//Debug.Log("Mine collision : " + colCount);
+			return false;
 		}
 		else {
 			p.health -=dmg;
-			return false;
+			//Debug.Log("Die you fuck");
+			return true;
 		}
 	}
 }

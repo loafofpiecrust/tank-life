@@ -4,11 +4,10 @@ using System.Collections;
 
 public abstract class Pickup : MonoBehaviour {
 
-	internal bool doNotDestroy = true;
-
 	void OnTriggerEnter(Collider col) {
-		Player p = col.gameObject.GetComponent<Player>();
-		if (p && !doNotDestroy){
+		//Debug.Log("collided");
+		Player p = col.GetComponent<Player>();
+		if (p){
 			bool keep = DoEffect (p);
 			if(!keep){
 				this.transform.parent = p.inv.transform;
@@ -16,7 +15,8 @@ public abstract class Pickup : MonoBehaviour {
 				this.renderer.enabled = false;
 			}
 			else {
-				Destroy (this);
+				//Debug.Log("Go away now");
+				Destroy(this.gameObject);
 			}
 		}
 	}
