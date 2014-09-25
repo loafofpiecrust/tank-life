@@ -15,20 +15,17 @@ internal class Player : MonoBehaviour {
 	//User Editable
 	public float moveSpeed = 100.0f;
 	public float maxMoveSpeed = 4.0f;
-	public float jumpForce = 400.0f;
+//	public float jumpForce = 400.0f;
 	public float turnSpeed = 10.0f;
 	public GameObject inv;
 	public GameObject bullet;
 	public float bulletSpeed = 10.0f;
+
+	public Transform leftTread;
+	public Transform rightTread;
+
 	bool onGround = true;
-	public Transform cannonHolder = null;
 	public Transform cannon = null;
-	public Transform cannonBarrel = null;
-	public Transform frontAxis;
-	public WheelCollider wheelTL;
-	public WheelCollider wheelTR;
-	public WheelCollider wheelBL;
-	public WheelCollider wheelBR;
 
 	// Use this for initialization
 	void Start () {
@@ -68,71 +65,18 @@ internal class Player : MonoBehaviour {
 			ver = Input.GetAxis ("Vertical");
 			hor = Input.GetAxis ("Horizontal");
 
-<<<<<<< HEAD
-	
-			if (ver != 0.0f) {
-				wheelTR.motorTorque = ver * moveSpeed;
-				wheelTL.motorTorque = ver * moveSpeed;
-				fuel -= Time.deltaTime;
-=======
-		/*	if (rigidbody.velocity.x < maxMoveSpeed) {
-				wheelTR.AddForce(new Vector3(transform.forward.x * (ver*moveSpeed), 0.0f, 0.0f));
-				wheelTL.AddForce(new Vector3(transform.forward.x * (ver*moveSpeed), 0.0f, 0.0f));
-			}*/
-			if (Input.GetButtonDown ("Vertical") && ver != 0.0f) {
-				ResetWheels ();
-				StartAllWheels(ver);
-				fuel -= maxMoveSpeed * 0.1f * Time.deltaTime;
->>>>>>> 3a51010c42e363ece09c997ad24e2daf5100c23b
+			if(ver != 0.0f) {
+				rigidbody.AddForce (transform.up * (ver * moveSpeed));
 			}
-			else if(Input.GetButtonUp ("Vertical")) {
-			//	StopAllWheels();
-			//	ResetWheels ();
-			}
-
-<<<<<<< HEAD
 			if(hor != 0.0f) {
-				frontAxis.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-=======
-		//	if(hor != 0.0f) transform.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-			if(Input.GetButtonDown ("Horizontal") && hor > 0.0f) {
-			//	frontAxis.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-				ResetWheels ();
-				StartWheel (wheelTL, 0.5f);
-				StartWheel (wheelBL, 0.5f);
-				StartWheel (wheelTR, -0.5f);
-				StartWheel (wheelBR, -0.5f);
+				transform.Rotate (new Vector3(0.0f, 0.0f, -hor * turnSpeed * Time.deltaTime));
 			}
-			else if(Input.GetButtonDown ("Horizontal") && hor < 0.0f) {
-				ResetWheels ();
-				StartWheel (wheelTL, -0.5f);
-				StartWheel (wheelBL, -0.5f);
-				StartWheel (wheelTR, 0.5f);
-				StartWheel (wheelBR, 0.5f);
-			}
-			else if(Input.GetButtonUp ("Horizontal")) {
-			//	StopAllWheels();
->>>>>>> 3a51010c42e363ece09c997ad24e2daf5100c23b
-			}
-		}
-
-
-		if (Input.GetButtonDown ("Jump") && onGround) {
-			rigidbody.AddForce (new Vector3(0.0f, jumpForce, 0.0f));
-			onGround = false;
 		}
 
 		if (cannon) {
 			hor = Input.GetAxis ("CannonHorizontal");
-			ver = Input.GetAxis ("CannonVertical");
-			cannon.Rotate (new Vector3(ver * turnSpeed * Time.deltaTime, 0.0f, 0.0f));
-			cannonHolder.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-			cannon.eulerAngles = new Vector3(
-				cannon.eulerAngles.x,
-				cannon.eulerAngles.y,
-				Mathf.Clamp(cannon.eulerAngles.z, 1.0f, 45.0f)
-			);
-
+		//	cannon.Rotate (new Vector3(ver * turnSpeed * Time.deltaTime, 0.0f, 0.0f));
+			cannon.Rotate (new Vector3(0.0f, 0.0f, hor * turnSpeed * Time.deltaTime));
 		}
 
 		if (Input.GetButtonDown ("Fire")) {
@@ -144,33 +88,13 @@ internal class Player : MonoBehaviour {
 	}
 
 	void FireCannon() {
-		if(!cannonBarrel || !bullet) return;
- 		GameObject obj = Object.Instantiate (bullet, cannonBarrel.position, Quaternion.identity) as GameObject;
+		if(!cannon || !bullet) return;
+		Vector3 pos = cannon.position + (cannon.up * 1.0f);
+		pos.z = -1.0f;
+ 		GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
 		Rigidbody rb = obj.AddComponent<Rigidbody>();
-		rb.AddForce (cannonBarrel.up * bulletSpeed);
+		rb.AddForce (cannon.up * bulletSpeed*100.0f);
+		this.rigidbody.AddExplosionForce (bulletSpeed*10.0f, pos, 10.0f);
 	}
 
-	void StartWheel(WheelCollider w, float mult = 1.0f) {
-		w.motorTorque = mult * moveSpeed;
-		w.brakeTorque = 0.0f;
-	}
-	void StopWheel(WheelCollider w, float mult = 1.0f) {
-		w.motorTorque = 0.0f;
-		w.brakeTorque = mult * moveSpeed;
-	}
-	void StartAllWheels(float mult = 1.0f) {
-		StartWheel (wheelTR, mult);
-		StartWheel (wheelTL, mult);
-		StartWheel (wheelBR, mult);
-		StartWheel (wheelBL, mult);
-	}
-	void StopAllWheels(float mult = 1.0f) {
-		StopWheel (wheelTR, mult);
-		StopWheel (wheelTL, mult);
-		StopWheel (wheelBR, mult);
-		StopWheel (wheelBL, mult);
-	}
-	void ResetWheels() {
-		StopAllWheels (0.0f);
-	}
 }
