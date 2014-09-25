@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour {
 
 	public float damage = 5.0f;
 
+
 	// Use this for initialization
 	void Start () {
 	}

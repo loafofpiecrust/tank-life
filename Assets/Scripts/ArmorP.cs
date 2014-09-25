@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HealthPackP : Pickup {
+public class ArmorP : Pickup {
 
 	public float amount;
 
@@ -16,8 +16,7 @@ public class HealthPackP : Pickup {
 	}
 
 	internal override bool DoEffect(Player p){
-		p.health += amount;
+		p.armor += amount;
 		return false;
 	}
-
 }

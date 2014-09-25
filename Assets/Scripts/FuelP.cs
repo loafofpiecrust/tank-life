@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Fuel : Pickup{
+public class FuelP : Pickup{
 
 	public float amount;
 
@@ -16,8 +16,9 @@ public class Fuel : Pickup{
 	
 	}
 
-	internal override void DoEffect(Player p){
+	internal override bool DoEffect(Player p){
 		p.fuel += amount;
+		return false;
 	}
 
 }

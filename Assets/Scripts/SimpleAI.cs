@@ -1,9 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HealthPackP : Pickup {
-
-	public float amount;
+public class SimpleAI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
@@ -14,10 +12,4 @@ public class HealthPackP : Pickup {
 	void Update () {
 	
 	}
-
-	internal override bool DoEffect(Player p){
-		p.health += amount;
-		return false;
-	}
-
 }
