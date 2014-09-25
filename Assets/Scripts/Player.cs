@@ -8,7 +8,6 @@ internal class Player : MonoBehaviour {
 	internal float armorRegen = 3.0f;
 	internal float armorRegenBonus = 0.0f;
 	internal float regenTime = 0.0f;
-
 	internal float fuel = 50.0f;
 	internal float maxFuel = 100.0f;
 
@@ -30,11 +29,6 @@ internal class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	/*	cannonHolder = transform.FindChild ("CannonHolder");
-		cannon = cannonHolder.FindChild("Cannon");
-		if (cannon) {
-			cannonBarrel = cannon.FindChild ("Barrel");
-		}*/
 	}
 	
 	// Update is called once per frame
@@ -83,14 +77,6 @@ internal class Player : MonoBehaviour {
 			hor = Input.GetAxis ("CannonHorizontal");
 		//	cannon.Rotate (new Vector3(ver * turnSpeed * Time.deltaTime, 0.0f, 0.0f));
 			cannon.Rotate (new Vector3(0.0f, 0.0f, hor * turnSpeed * Time.deltaTime));
-		//	cannonBarrel.RotateAround (cannon.position, new Vector3(ver, hor, 0.0f), turnSpeed * Time.deltaTime);
-		/*	cannon.eulerAngles = new Vector3(
-				cannon.eulerAngles.x,
-			//	Mathf.Clamp(cannon.rotation.eulerAngles.y, 1.0f, 90.0f),
-				cannon.eulerAngles.y,
-				Mathf.Clamp(cannon.eulerAngles.z, 1.0f, 45.0f)
-			);*/
-
 		}
 
 		if (Input.GetButtonDown ("Fire")) {
