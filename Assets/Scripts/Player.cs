@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-internal class Player : MonoBehaviour {
+public class Player : MonoBehaviour {
+	private float currSpeed = 0.0f;
+	private float moveTime = 0.0f;
+	private float currAngle = 0.0f;
+	private float turnTime = 0.0f;
+	private float currCannonAngle = 0.0f;
+	private float cannonTurnTime = 0.0f;
+
 	// Non-User Editable
 	internal float armor = 100.0f;
 	internal float health = 100.0f;
@@ -13,6 +20,9 @@ internal class Player : MonoBehaviour {
 	internal int kills;
 	internal int flags;
 
+	internal int maxAmmo = 100;
+	internal int ammo = 0;
+
 
 	//User Editable
 	public float moveSpeed = 100.0f;
@@ -23,17 +33,11 @@ internal class Player : MonoBehaviour {
 	public GameObject bullet;
 	public float bulletSpeed = 10.0f;
 	bool onGround = true;
-	public Transform cannonHolder = null;
 	public Transform cannon = null;
-	public Transform cannonBarrel = null;
-	public Transform frontAxis;
-	public WheelCollider wheelTL;
-	public WheelCollider wheelTR;
-	public WheelCollider wheelBL;
-	public WheelCollider wheelBR;
 
 	// Use this for initialization
 	void Start () {
+		ammo = maxAmmo;
 	}
 	
 	// Update is called once per frame
@@ -53,6 +57,15 @@ internal class Player : MonoBehaviour {
 			Destroy(this);
 		}
 
+		if (currSpeed > 0.0f && fuel > 0.0f && moveTime > 0.0f) {
+			Debug.Log ("speed: "+currSpeed);
+			rigidbody.AddForce (transform.up * currSpeed);
+			moveTime -= Time.deltaTime;
+		}
+		else {
+			moveTime = 0.0f;
+		}
+
 		if(Input.GetKeyDown(KeyCode.LeftShift)){
 			Mine mine = inv.GetComponentInChildren<Mine>();
 			if(mine){
@@ -63,71 +76,22 @@ internal class Player : MonoBehaviour {
 			}
 		}
 
-		
-		float hor;
-		float ver;
-		if(fuel > 0.0f) {
-			ver = Input.GetAxis ("Vertical");
-			hor = Input.GetAxis ("Horizontal");
-
-
-	
-			if (ver != 0.0f) {
-				wheelTR.motorTorque = ver * moveSpeed;
-				wheelTL.motorTorque = ver * moveSpeed;
-				fuel -= Time.deltaTime;
-			}
-			if (Input.GetButtonDown ("Vertical") && ver != 0.0f) {
-				ResetWheels ();
-				StartAllWheels(ver);
-				fuel -= maxMoveSpeed * 0.1f * Time.deltaTime;
-			}
-			else if(Input.GetButtonUp ("Vertical")) {
-			//	StopAllWheels();
-			//	ResetWheels ();
-			}
-
-			if(hor != 0.0f) {
-				frontAxis.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-				}
-		//	if(hor != 0.0f) transform.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-			if(Input.GetButtonDown ("Horizontal") && hor > 0.0f) {
-			//	frontAxis.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-				ResetWheels ();
-				StartWheel (wheelTL, 0.5f);
-				StartWheel (wheelBL, 0.5f);
-				StartWheel (wheelTR, -0.5f);
-				StartWheel (wheelBR, -0.5f);
-			}
-			else if(Input.GetButtonDown ("Horizontal") && hor < 0.0f) {
-				ResetWheels ();
-				StartWheel (wheelTL, -0.5f);
-				StartWheel (wheelBL, -0.5f);
-				StartWheel (wheelTR, 0.5f);
-				StartWheel (wheelBR, 0.5f);
-			}
-			else if(Input.GetButtonUp ("Horizontal")) {
-			//	StopAllWheels();
-			}
-		}
-
 
 		if (Input.GetButtonDown ("Jump") && onGround) {
 			rigidbody.AddForce (new Vector3(0.0f, jumpForce, 0.0f));
 			onGround = false;
 		}
 
-		if (cannon) {
-			hor = Input.GetAxis ("CannonHorizontal");
-			ver = Input.GetAxis ("CannonVertical");
-			cannon.Rotate (new Vector3(ver * turnSpeed * Time.deltaTime, 0.0f, 0.0f));
-			cannonHolder.Rotate (new Vector3(0.0f, hor * turnSpeed * Time.deltaTime, 0.0f));
-			cannon.eulerAngles = new Vector3(
-				cannon.eulerAngles.x,
-				cannon.eulerAngles.y,
-				Mathf.Clamp(cannon.eulerAngles.z, 1.0f, 45.0f)
-			);
+		if (cannon && currCannonAngle != cannon.eulerAngles.z && cannonTurnTime > 0.0f) {
+			float dir = Mathf.Sign (cannon.eulerAngles.z - currCannonAngle);
+			cannon.Rotate (new Vector3 (0.0f, 0.0f, dir * turnSpeed * Time.deltaTime));
+			cannonTurnTime -= Time.deltaTime;
+		}
 
+		if (currAngle != transform.eulerAngles.z && turnTime > 0.0f) {
+			float dir = Mathf.Sign(transform.eulerAngles.z - currAngle);
+			transform.Rotate (new Vector3(0.0f, 0.0f, dir * turnSpeed * Time.deltaTime));
+			turnTime -= Time.deltaTime;
 		}
 
 		if (Input.GetButtonDown ("Fire")) {
@@ -139,36 +103,48 @@ internal class Player : MonoBehaviour {
 		onGround = true;
 	}
 
-	void FireCannon() {
-		if(!cannonBarrel || !bullet) return;
- 		GameObject obj = Object.Instantiate (bullet, cannonBarrel.position, Quaternion.identity) as GameObject;
-		Rigidbody rb = obj.AddComponent<Rigidbody>();
+	public void FireCannon() {
+		if(!cannon || !bullet || ammo <= 0) return;
+		Vector3 pos = cannon.position + (cannon.up * 1.0f);
+		pos.z = -1.0f;
+		GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
 		Bullet b = obj.GetComponent<Bullet>();
 		b.player = this;
-		rb.AddForce (cannonBarrel.up * bulletSpeed);
+		obj.rigidbody.AddForce (cannon.up * bulletSpeed*100.0f);
+		this.rigidbody.AddExplosionForce (bulletSpeed*1500.0f, pos, 10.0f);
+		ammo--;
 	}
 
-	void StartWheel(WheelCollider w, float mult = 1.0f) {
-		w.motorTorque = mult * moveSpeed;
-		w.brakeTorque = 0.0f;
+	public void MoveForward(float time) {
+		currSpeed = moveSpeed;
+		moveTime = time;
 	}
-	void StopWheel(WheelCollider w, float mult = 1.0f) {
-		w.motorTorque = 0.0f;
-		w.brakeTorque = mult * moveSpeed;
+
+	public void MoveBackwards(float time) {
+		currSpeed = -moveSpeed;
+		moveTime = time;
 	}
-	void StartAllWheels(float mult = 1.0f) {
-		StartWheel (wheelTR, mult);
-		StartWheel (wheelTL, mult);
-		StartWheel (wheelBR, mult);
-		StartWheel (wheelBL, mult);
+
+	public void StopMoving() {
+		moveTime = 0.0f;
+		currSpeed = 0.0f;
 	}
-	void StopAllWheels(float mult = 1.0f) {
-		StopWheel (wheelTR, mult);
-		StopWheel (wheelTL, mult);
-		StopWheel (wheelBR, mult);
-		StopWheel (wheelBL, mult);
+
+	public void Turn(float deg, float time) {
+		currAngle = deg;
+		turnTime = time;
 	}
-	void ResetWheels() {
-		StopAllWheels (0.0f);
+
+	public void TurnCannon(float deg, float time) {
+		currCannonAngle = deg;
+		cannonTurnTime = time;
+	}
+
+	public bool IsTurned() {
+		return cannon.eulerAngles.z == currCannonAngle;
+	}
+
+	public bool IsMoved() {
+		return moveTime <= 0.0f;
 	}
 }

@@ -3,11 +3,13 @@ using System.Collections;
 
 public class Bullet : MonoBehaviour {
 
+	public float lifeTime = 10.0f;
 	public float damage = 5.0f;
 	internal Player player;
 
 	// Use this for initialization
 	void Start () {
+		GameObject.Destroy (gameObject, lifeTime);
 	}
 	
 	// Update is called once per frame
