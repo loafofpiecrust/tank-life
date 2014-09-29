@@ -1,7 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-internal class Player : MonoBehaviour {
+public class Player : MonoBehaviour {
+	private float currSpeed = 0.0f;
+	private float moveTime = 0.0f;
+	private float currAngle = 0.0f;
+	private float turnTime = 0.0f;
+	private float currCannonAngle = 0.0f;
+	private float cannonTurnTime = 0.0f;
+
 	// Non-User Editable
 	internal float armor = 100.0f;
 	internal float health = 100.0f;
@@ -10,6 +17,9 @@ internal class Player : MonoBehaviour {
 	internal float regenTime = 0.0f;
 	internal float fuel = 50.0f;
 	internal float maxFuel = 100.0f;
+
+	internal int maxAmmo = 100;
+	internal int ammo = 0;
 
 
 	//User Editable
@@ -29,6 +39,7 @@ internal class Player : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		ammo = maxAmmo;
 	}
 	
 	// Update is called once per frame
@@ -48,6 +59,15 @@ internal class Player : MonoBehaviour {
 			Destroy(this);
 		}
 
+		if (currSpeed > 0.0f && fuel > 0.0f && moveTime > 0.0f) {
+			Debug.Log ("speed: "+currSpeed);
+			rigidbody.AddForce (transform.up * currSpeed);
+			moveTime -= Time.deltaTime;
+		}
+		else {
+			moveTime = 0.0f;
+		}
+
 		if(Input.GetKeyDown(KeyCode.LeftShift)){
 			Mine mine = inv.GetComponentInChildren<Mine>();
 			if(mine){
@@ -58,25 +78,16 @@ internal class Player : MonoBehaviour {
 			}
 		}
 
-		
-		float hor;
-		float ver;
-		if(fuel > 0.0f) {
-			ver = Input.GetAxis ("Vertical");
-			hor = Input.GetAxis ("Horizontal");
-
-			if(ver != 0.0f) {
-				rigidbody.AddForce (transform.up * (ver * moveSpeed));
-			}
-			if(hor != 0.0f) {
-				transform.Rotate (new Vector3(0.0f, 0.0f, -hor * turnSpeed * Time.deltaTime));
-			}
+		if (cannon && currCannonAngle != cannon.eulerAngles.z && cannonTurnTime > 0.0f) {
+			float dir = Mathf.Sign (cannon.eulerAngles.z - currCannonAngle);
+			cannon.Rotate (new Vector3 (0.0f, 0.0f, dir * turnSpeed * Time.deltaTime));
+			cannonTurnTime -= Time.deltaTime;
 		}
 
-		if (cannon) {
-			hor = Input.GetAxis ("CannonHorizontal");
-		//	cannon.Rotate (new Vector3(ver * turnSpeed * Time.deltaTime, 0.0f, 0.0f));
-			cannon.Rotate (new Vector3(0.0f, 0.0f, hor * turnSpeed * Time.deltaTime));
+		if (currAngle != transform.eulerAngles.z && turnTime > 0.0f) {
+			float dir = Mathf.Sign(transform.eulerAngles.z - currAngle);
+			transform.Rotate (new Vector3(0.0f, 0.0f, dir * turnSpeed * Time.deltaTime));
+			turnTime -= Time.deltaTime;
 		}
 
 		if (Input.GetButtonDown ("Fire")) {
@@ -87,14 +98,47 @@ internal class Player : MonoBehaviour {
 		onGround = true;
 	}
 
-	void FireCannon() {
-		if(!cannon || !bullet) return;
+	public void FireCannon() {
+		if(!cannon || !bullet || ammo <= 0) return;
 		Vector3 pos = cannon.position + (cannon.up * 1.0f);
 		pos.z = -1.0f;
- 		GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
-		Rigidbody rb = obj.AddComponent<Rigidbody>();
-		rb.AddForce (cannon.up * bulletSpeed*100.0f);
-		this.rigidbody.AddExplosionForce (bulletSpeed*10.0f, pos, 10.0f);
+		GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
+		obj.rigidbody.AddForce (cannon.up * bulletSpeed*100.0f);
+		this.rigidbody.AddExplosionForce (bulletSpeed*1500.0f, pos, 10.0f);
+		ammo--;
+	}
+
+	public void MoveForward(float time) {
+		currSpeed = moveSpeed;
+		moveTime = time;
+	}
+
+	public void MoveBackwards(float time) {
+		currSpeed = -moveSpeed;
+		moveTime = time;
+	}
+
+	public void StopMoving() {
+		moveTime = 0.0f;
+		currSpeed = 0.0f;
+	}
+
+	public void Turn(float deg, float time) {
+		currAngle = deg;
+		turnTime = time;
+	}
+
+	public void TurnCannon(float deg, float time) {
+		currCannonAngle = deg;
+		cannonTurnTime = time;
+	}
+
+	public bool IsTurned() {
+		return cannon.eulerAngles.z == currCannonAngle;
+	}
+
+	public bool IsMoved() {
+		return moveTime <= 0.0f;
 	}
 
 }
