@@ -16,11 +16,14 @@ public class FlagWin : Pickup {
 	}
 
 	internal override bool DoEffect (Player p){
+		stayingOut=true;
+		stayingAlive=true;
 		if(p.GetComponentInChildren<Flag>() is Flag
 		   && p.flags >= minimumFlagsRequired){
-			//Debug.Log("You Win!");
+			Debug.Log("You Win!");
 			Application.LoadLevel(++levelCount);
 		}
-		return true;
+		return false;
+
 	}
 }

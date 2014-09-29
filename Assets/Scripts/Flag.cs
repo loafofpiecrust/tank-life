@@ -14,7 +14,7 @@ public class Flag : Pickup {
 	}
 
 	internal override bool DoEffect (Player p){
-		//Debug.Log("Flag Here!");
+		Debug.Log("Flag Here!");
 		p.flags++;
 		return false;
 	}

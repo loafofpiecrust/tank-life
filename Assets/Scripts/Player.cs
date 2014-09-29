@@ -58,7 +58,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if (currSpeed > 0.0f && fuel > 0.0f && moveTime > 0.0f) {
-			Debug.Log ("speed: "+currSpeed);
+			//Debug.Log ("speed: "+currSpeed);
 			rigidbody.AddForce (transform.up * currSpeed);
 			moveTime -= Time.deltaTime;
 		}

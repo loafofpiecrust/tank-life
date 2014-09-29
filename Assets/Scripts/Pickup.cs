@@ -6,16 +6,16 @@ public abstract class Pickup : MonoBehaviour {
 
 	internal bool stayingAlive;
 	internal bool stayingOut;
-	internal static int levelCount;
+	internal static int levelCount=1;
 
 	void OnTriggerEnter(Collider col) {
-		//Debug.Log("collided");
+		Debug.Log("collided");
 		Player p = col.GetComponent<Player>();
-		//Debug.Log("Player received.");
+		Debug.Log("Player received.");
 		if (p){
-			//Debug.Log("Is player?");
+			Debug.Log("Is player?");
 			bool keep = DoEffect (p);
-			if(!stayingOut || !keep){
+			if(!stayingOut && !keep){
 				Debug.Log("Do you want to keep");
 				this.transform.parent = p.inv.transform;
 				this.collider.enabled = false;
