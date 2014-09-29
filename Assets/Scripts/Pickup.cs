@@ -4,17 +4,24 @@ using System.Collections;
 
 public abstract class Pickup : MonoBehaviour {
 
+	internal bool stayingAlive;
+	internal bool stayingOut;
+	internal static int levelCount;
+
 	void OnTriggerEnter(Collider col) {
 		//Debug.Log("collided");
 		Player p = col.GetComponent<Player>();
+		//Debug.Log("Player received.");
 		if (p){
+			//Debug.Log("Is player?");
 			bool keep = DoEffect (p);
-			if(!keep){
+			if(!stayingOut || !keep){
+				Debug.Log("Do you want to keep");
 				this.transform.parent = p.inv.transform;
 				this.collider.enabled = false;
 				this.renderer.enabled = false;
 			}
-			else {
+			else if(!stayingAlive){
 				//Debug.Log("Go away now");
 				Destroy(this.gameObject);
 			}

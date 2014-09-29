@@ -3,6 +3,8 @@ using System.Collections;
 
 public class FlagWin : Pickup {
 
+	public int minimumFlagsRequired;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -14,9 +16,10 @@ public class FlagWin : Pickup {
 	}
 
 	internal override bool DoEffect (Player p){
-		if(p.GetComponentInChildren<Flag>() is Flag){
+		if(p.GetComponentInChildren<Flag>() is Flag
+		   && p.flags >= minimumFlagsRequired){
 			//Debug.Log("You Win!");
-			Application.LoadLevel(1);
+			Application.LoadLevel(++levelCount);
 		}
 		return true;
 	}
