@@ -21,12 +21,12 @@ public class Bullet : MonoBehaviour {
 		// cause damage
 		Player other = col.gameObject.GetComponent<Player>();
 		if (other) {
-			if (other.health <= damage){
-				other.health -=damage;
+			if (other.health <= damage) {
+				other.health -= damage;
 				player.kills++;
 			}
-			else{
-			other.health -= damage;
+			else {
+				other.health -= damage;
 			}
 		}
 		// destroy self

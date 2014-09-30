@@ -45,7 +45,7 @@ public class Player : MonoBehaviour {
 		if (armor < 100.0f) {
 			armor += (armorRegen + armorRegenBonus) * Time.deltaTime;
 		}
-
+		
 		if (regenTime > 0.0f) {
 			regenTime -= Time.deltaTime;
 		} else if (regenTime == 0.0f) {
@@ -57,13 +57,13 @@ public class Player : MonoBehaviour {
 			Destroy(this);
 		}
 
-		if (currSpeed > 0.0f && fuel > 0.0f && moveTime > 0.0f) {
-			Debug.Log ("speed: "+currSpeed);
+		if (currSpeed != 0.0f && fuel > 0.0f && moveTime > 0.0f) {
 			rigidbody.AddForce (transform.up * currSpeed);
 			moveTime -= Time.deltaTime;
 		}
 		else {
 			moveTime = 0.0f;
+			currSpeed = 0.0f;
 		}
 
 		if(Input.GetKeyDown(KeyCode.LeftShift)){
@@ -82,16 +82,18 @@ public class Player : MonoBehaviour {
 			onGround = false;
 		}
 
-		if (cannon && currCannonAngle != cannon.eulerAngles.z && cannonTurnTime > 0.0f) {
-			float dir = Mathf.Sign (cannon.eulerAngles.z - currCannonAngle);
-			cannon.Rotate (new Vector3 (0.0f, 0.0f, dir * turnSpeed * Time.deltaTime));
-			cannonTurnTime -= Time.deltaTime;
+		if (cannon && (currCannonAngle > 0.5f || currCannonAngle < -0.5f)) {
+			float dir = Mathf.Sign (currCannonAngle);
+			float amt = dir * turnSpeed * Time.deltaTime;
+			cannon.Rotate (new Vector3 (0.0f, 0.0f, amt));
+			currCannonAngle -= amt;
 		}
 
-		if (currAngle != transform.eulerAngles.z && turnTime > 0.0f) {
-			float dir = Mathf.Sign(transform.eulerAngles.z - currAngle);
-			transform.Rotate (new Vector3(0.0f, 0.0f, dir * turnSpeed * Time.deltaTime));
-			turnTime -= Time.deltaTime;
+		if (currAngle > 0.5f || currAngle < -0.5f) {
+			float dir = Mathf.Sign(currAngle);
+			float amt = dir * turnSpeed * Time.deltaTime;
+			transform.Rotate (new Vector3(0.0f, 0.0f, amt));
+			currAngle -= amt;
 		}
 
 		if (Input.GetButtonDown ("Fire")) {
@@ -129,19 +131,26 @@ public class Player : MonoBehaviour {
 		moveTime = 0.0f;
 		currSpeed = 0.0f;
 	}
-
-	public void Turn(float deg, float time) {
+	
+	public void TurnTo(float deg) {
+		Turn(deg - transform.eulerAngles.z);
+	}
+	public void Turn(float deg) {
 		currAngle = deg;
-		turnTime = time;
 	}
 
-	public void TurnCannon(float deg, float time) {
+	public void TurnCannonTo(Vector3 to) {
+		cannon.LookAt (new Vector3(cannon.position.x,cannon.position.y,to.z));
+	}
+	public void TurnCannonTo(float deg) {
+		TurnCannon(deg - cannon.eulerAngles.z);
+	}
+	public void TurnCannon(float deg) {
 		currCannonAngle = deg;
-		cannonTurnTime = time;
 	}
 
 	public bool IsTurned() {
-		return cannon.eulerAngles.z == currCannonAngle;
+		return Mathf.Abs (currAngle) < 2.0f;
 	}
 
 	public bool IsMoved() {
