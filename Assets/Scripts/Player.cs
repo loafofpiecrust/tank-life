@@ -2,12 +2,6 @@
 using System.Collections;
 
 public class Player : MonoBehaviour {
-	private float currSpeed = 0.0f;
-	private float moveTime = 0.0f;
-	private float currAngle = 0.0f;
-	private float turnTime = 0.0f;
-	private float currCannonAngle = 0.0f;
-	private float cannonTurnTime = 0.0f;
 
 	// Non-User Editable
 	internal float armor = 100.0f;
@@ -19,6 +13,9 @@ public class Player : MonoBehaviour {
 	internal float maxFuel = 100.0f;
 	internal int kills;
 	internal int flags;
+
+	internal float reloadTime = 1.5f;
+	private float currReload = 0.0f;
 
 	internal int maxAmmo = 100;
 	internal int ammo = 0;
@@ -32,8 +29,12 @@ public class Player : MonoBehaviour {
 	public GameObject inv;
 	public GameObject bullet;
 	public float bulletSpeed = 10.0f;
+	public float bulletForce = 100.0f;
 	bool onGround = true;
 	public Transform cannon = null;
+	public Transform cannonBarrel = null;
+
+	public ParticleSystem cannonEffect = null;
 
 	// Use this for initialization
 	void Start () {
@@ -57,14 +58,10 @@ public class Player : MonoBehaviour {
 			Destroy(this);
 		}
 
-		if (currSpeed != 0.0f && fuel > 0.0f && moveTime > 0.0f) {
-			rigidbody.AddForce (transform.up * currSpeed);
-			moveTime -= Time.deltaTime;
+		if (currReload > 0.0f) {
+			currReload -= Time.deltaTime;
 		}
-		else {
-			moveTime = 0.0f;
-			currSpeed = 0.0f;
-		}
+
 
 		if(Input.GetKeyDown(KeyCode.LeftShift)){
 			Mine mine = inv.GetComponentInChildren<Mine>();
@@ -82,19 +79,6 @@ public class Player : MonoBehaviour {
 			onGround = false;
 		}
 
-		if (cannon && (currCannonAngle > 0.5f || currCannonAngle < -0.5f)) {
-			float dir = Mathf.Sign (currCannonAngle);
-			float amt = dir * turnSpeed * Time.deltaTime;
-			cannon.Rotate (new Vector3 (0.0f, 0.0f, amt));
-			currCannonAngle -= amt;
-		}
-
-		if (currAngle > 0.5f || currAngle < -0.5f) {
-			float dir = Mathf.Sign(currAngle);
-			float amt = dir * turnSpeed * Time.deltaTime;
-			transform.Rotate (new Vector3(0.0f, 0.0f, amt));
-			currAngle -= amt;
-		}
 
 		if (Input.GetButtonDown ("Fire")) {
 			FireCannon();
@@ -106,54 +90,32 @@ public class Player : MonoBehaviour {
 	}
 
 	public void FireCannon() {
-		if(!cannon || !bullet || ammo <= 0) return;
-		Vector3 pos = cannon.position + (cannon.up * 1.0f);
-		pos.z = -1.0f;
+		if(!cannonBarrel || !bullet || ammo <= 0 || currReload > 0.0f) return;
+
+		Vector3 pos = cannonBarrel.position + (cannonBarrel.up * 1.0f);
+		pos.z = -.3f;
 		GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
 		Bullet b = obj.GetComponent<Bullet>();
 		b.player = this;
-		obj.rigidbody.AddForce (cannon.up * bulletSpeed*100.0f);
-		this.rigidbody.AddExplosionForce (bulletSpeed*1500.0f, pos, 10.0f);
+		obj.rigidbody.AddForce (cannonBarrel.up * bulletSpeed);
+		this.rigidbody.AddExplosionForce (bulletForce, pos, 10.0f);
 		ammo--;
+		currReload = reloadTime;
+
+		if (cannonEffect) {
+			cannonEffect.Emit (50);
+		}
 	}
 
-	public void MoveForward(float time) {
-		currSpeed = moveSpeed;
-		moveTime = time;
-	}
-
-	public void MoveBackwards(float time) {
-		currSpeed = -moveSpeed;
-		moveTime = time;
-	}
-
-	public void StopMoving() {
-		moveTime = 0.0f;
-		currSpeed = 0.0f;
-	}
-	
-	public void TurnTo(float deg) {
-		Turn(deg - transform.eulerAngles.z);
-	}
-	public void Turn(float deg) {
-		currAngle = deg;
-	}
-
-	public void TurnCannonTo(Vector3 to) {
-		cannon.LookAt (new Vector3(cannon.position.x,cannon.position.y,to.z));
-	}
-	public void TurnCannonTo(float deg) {
-		TurnCannon(deg - cannon.eulerAngles.z);
-	}
-	public void TurnCannon(float deg) {
-		currCannonAngle = deg;
-	}
-
-	public bool IsTurned() {
-		return Mathf.Abs (currAngle) < 2.0f;
-	}
-
-	public bool IsMoved() {
-		return moveTime <= 0.0f;
+	public void Implode() {
+		for(uint i = 0; i < transform.childCount; ++i) {
+			GameObject child = transform.GetChild (i).gameObject;
+			child.transform.parent = null;
+			if(!child.rigidbody) {
+				child.AddComponent<Rigidbody>();
+			}
+			child.rigidbody.useGravity = false;
+			child.rigidbody.AddExplosionForce (100.0f, transform.position, 3.0f);
+		}
 	}
 }

@@ -35,7 +35,7 @@ public class GasStation : MonoBehaviour {
 			//save old acceleration and turn values and set to 0 so player can't start moving
 			float oldMoveSpeed = p.moveSpeed;
 			p.moveSpeed = 0f;
-			float oldTurnSpeed = p.moveSpeed;
+			float oldTurnSpeed = p.turnSpeed;
 			p.turnSpeed = 0f;
 			//wait for waitTime
 			yield return new WaitForSeconds(waitTime);

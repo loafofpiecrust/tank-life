@@ -28,8 +28,8 @@ public class Bullet : MonoBehaviour {
 			else {
 				other.health -= damage;
 			}
+			// destroy self
+			GameObject.Destroy (gameObject);
 		}
-		// destroy self
-		GameObject.Destroy (gameObject);
 	}
 }
