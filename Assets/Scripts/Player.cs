@@ -35,6 +35,8 @@ public class Player : MonoBehaviour {
 	public Transform cannonBarrel = null;
 
 	public ParticleSystem cannonEffect = null;
+	public int neededWins;
+	public bool isP1;
 
 	// Use this for initialization
 	void Start () {
@@ -108,7 +110,7 @@ public class Player : MonoBehaviour {
 	}
 
 	public void Implode() {
-		for(uint i = 0; i < transform.childCount; ++i) {
+		for(int i = 0; i < transform.childCount; ++i) {
 			GameObject child = transform.GetChild (i).gameObject;
 			child.transform.parent = null;
 			if(!child.rigidbody) {
