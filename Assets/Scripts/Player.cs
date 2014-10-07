@@ -34,6 +34,8 @@ public class Player : MonoBehaviour {
 	public float bulletSpeed = 10.0f;
 	bool onGround = true;
 	public Transform cannon = null;
+	public int neededWins;
+	public bool isP1;
 
 	// Use this for initialization
 	void Start () {
