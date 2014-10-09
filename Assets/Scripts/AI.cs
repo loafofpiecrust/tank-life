@@ -42,6 +42,7 @@ public abstract class AI : MonoBehaviour {
 		if (currSpeed != 0.0f && player.fuel > 0.0f && moveTime > 0.0f) {
 			rigidbody.AddForce (transform.up * currSpeed);
 			moveTime -= Time.deltaTime;
+			player.BurnFuel();
 		}
 		else {
 			moveTime = 0.0f;
@@ -65,14 +66,14 @@ public abstract class AI : MonoBehaviour {
 	}
 	
 	public Player GetNearestVisiblePlayer() {
-		Transform obj = GetNearestVisiblePriority ();
+		Transform obj = GetNearestVisibleThing ();
 		if (obj) {
 			return obj.GetComponent<Player>();
 		}
 		return null;
 	}
 	
-	public Transform GetNearestVisiblePriority() {
+	public Transform GetNearestVisibleThing() {
 		RaycastHit hit;
 		bool cast = Physics.SphereCast (transform.position, visibleRadius, transform.forward, out hit, visibleRadius);
 		if (cast && hit.transform != this.transform) {
@@ -81,7 +82,7 @@ public abstract class AI : MonoBehaviour {
 		return null;
 	}
 	
-	public bool IsBlocked(Vector3 inDir, float clearance = 0.51f) {
+	public bool IsBlocked(Vector3 inDir, float clearance = 0.5f) {
 		Vector3 startBase = transform.position + (inDir * clearance);
 		Vector3 start1 = startBase + (Vector3.Cross (inDir, transform.forward) * clearance);
 		Vector3 start2 = startBase - (Vector3.Cross (inDir, transform.forward) * clearance);

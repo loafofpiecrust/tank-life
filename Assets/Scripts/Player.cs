@@ -14,7 +14,7 @@ public class Player : MonoBehaviour {
 	internal int kills;
 	internal int flags;
 
-	internal float reloadTime = 1.5f;
+	internal float reloadTime = 0.2f;
 	private float currReload = 0.0f;
 
 	internal int maxAmmo = 100;
@@ -57,7 +57,8 @@ public class Player : MonoBehaviour {
 		}
 
 		if(health<=0.0f){
-			Destroy(this);
+			OnDeath();
+			Destroy(gameObject);
 		}
 
 		if (currReload > 0.0f) {
@@ -119,5 +120,13 @@ public class Player : MonoBehaviour {
 			child.rigidbody.useGravity = false;
 			child.rigidbody.AddExplosionForce (100.0f, transform.position, 3.0f);
 		}
+	}
+
+
+	internal void BurnFuel() {
+		fuel -= rigidbody.velocity.magnitude * Time.deltaTime;
+	}
+
+	public void OnDeath() {
 	}
 }

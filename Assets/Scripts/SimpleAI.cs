@@ -7,6 +7,15 @@ public class SimpleAI : AI {
 
 	public override void StepLogic() {
 		rigidbody.inertiaTensor = new Vector3(1, 1, 1);
+	
+
+		bool rightBlocked = IsBlocked (transform.right);
+		
+		if (!rightBlocked && IsMoved ()) {
+			Turn (40);
+			MoveForward (2.0f);
+		}
+
 		if (IsBlocked (transform.up)) {
 			Debug.Log ("forward is blocked");
 			float turnAngle = 20;
@@ -18,17 +27,17 @@ public class SimpleAI : AI {
 				Turn(turnAngle);
 			}
 		} else if(IsMoved()) {
-			MoveForward (stepLength);
+			MoveForward (stepLength*2);
 		}
 
-		if (!wallOnRight && !IsBlocked (transform.right) && IsMoved ()) {
-		//	player.StopMoving (0.5f);
+		if (!wallOnRight && !rightBlocked && IsMoved ()) {
+			StopMoving (0.2f);
 			Turn (15);
 		}
-		if (!wallOnRight && IsBlocked (transform.right)) {
+		if (!wallOnRight && rightBlocked) {
 			wallOnRight = true;
-		} else if (wallOnRight && !IsBlocked (transform.right)) {
-			StopMoving (0.5f);
+		} else if (wallOnRight && !rightBlocked) {
+			StopMoving (0.2f);
 			Turn (70);
 			wallOnRight = false;
 		}
