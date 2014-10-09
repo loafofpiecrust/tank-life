@@ -3,6 +3,8 @@ using System.Collections;
 
 public class Flag : Pickup {
 
+	//public int removeHealth;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -15,6 +17,7 @@ public class Flag : Pickup {
 
 	internal override bool DoEffect (Player p){
 		Debug.Log("Flag Here!");
+		//p.health -= removeHealth;
 		p.flags++;
 		return false;
 	}
