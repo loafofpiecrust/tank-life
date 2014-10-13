@@ -3,8 +3,8 @@ using System.Collections;
 
 public class Mine : Pickup{
 
-	public int dmg;
-	internal int colCount = 0;
+	public float dmg;
+	public int colCount = 0;
 	
 	// Use this for initialization
 	void Start () {

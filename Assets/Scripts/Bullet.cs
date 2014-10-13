@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour {
 		// cause damage
 		Player other = col.gameObject.GetComponent<Player>();
 		if (other) {
+			other.rigidbody.AddForceAtPosition (Vector3.Normalize (rigidbody.velocity) * player.bulletForce * 0.6f, col.contacts[0].point);
 			if (other.health <= damage) {
 				other.health -= damage;
 				player.kills++;
