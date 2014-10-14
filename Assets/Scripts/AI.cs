@@ -20,6 +20,10 @@ public abstract class AI : MonoBehaviour {
 	private float currCannonAngle = 0.0f;
 	private float cannonTurnTime = 0.0f;
 
+	protected const int playersLayer = 1 << 10;
+	protected const int wallsLayer = 1 << 9;
+	protected const int pickupsLayer = 1 << 8;
+
 
 	public abstract void StepLogic();
 
@@ -65,29 +69,27 @@ public abstract class AI : MonoBehaviour {
 		}
 	}
 	
-	public Player GetNearestVisiblePlayer() {
-		Transform obj = GetNearestVisibleThing ();
-		if (obj) {
-			return obj.GetComponent<Player>();
-		}
-		return null;
-	}
-	
-	public Transform GetNearestVisibleThing() {
+	public Transform GetNearestVisibleThing(int layerMask) {
 		RaycastHit hit;
 		bool cast = Physics.SphereCast (transform.position, visibleRadius, transform.forward, out hit, visibleRadius);
 		if (cast && hit.transform != this.transform) {
-			return hit.transform;
+			Vector3 dir = Vector3.Normalize (hit.transform.position - transform.position);
+			Debug.DrawLine(transform.position, transform.position+(dir*visibleRadius), Color.green);
+			Debug.Log ("WE SEE SOME SHIT");
+			if(Physics.Raycast (transform.position+(dir*1.5f), dir, visibleRadius, ~layerMask)) {
+				Debug.Log ("Its in the right layer!");
+				return hit.transform;
+			}
 		}
 		return null;
 	}
 	
-	public bool IsBlocked(Vector3 inDir, float clearance = 0.5f) {
+	public bool IsBlocked(int layerMask, Vector3 inDir, float clearance = 0.5f) {
 		Vector3 startBase = transform.position + (inDir * clearance);
 		Vector3 start1 = startBase + (Vector3.Cross (inDir, transform.forward) * clearance);
 		Vector3 start2 = startBase - (Vector3.Cross (inDir, transform.forward) * clearance);
 		Debug.DrawLine(startBase, startBase+(inDir*dangerRadius), Color.green);
-		return Physics.Raycast (start1, inDir, dangerRadius) || Physics.Raycast (start2, inDir, dangerRadius);
+		return Physics.Raycast (start1, inDir, dangerRadius, layerMask) || Physics.Raycast (start2, inDir, dangerRadius, layerMask);
 	}
 
 	
