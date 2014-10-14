@@ -37,7 +37,7 @@ public class Player : MonoBehaviour {
 
 	public ParticleSystem cannonEffect = null;
 	public int neededWins;
-	public bool isP1;
+
 
 	// Use this for initialization
 	void Start () {
@@ -58,7 +58,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if(health<=0.0f){
-			OnDeath();
+			Die();
 		}
 
 		if (currReload > 0.0f) {
@@ -86,6 +86,7 @@ public class Player : MonoBehaviour {
 		if (Input.GetButtonDown ("Fire")) {
 			FireCannon();
 		}
+
 	}
 
 	void OnCollisionEnter(Collision collision) {
@@ -128,12 +129,18 @@ public class Player : MonoBehaviour {
 		}
 	}
 
+	public void Die(){
+		Component flag = inv.GetComponentInChildren<Flag>();
+		if ( flag is Flag){
+			flag.transform.parent = null;
+			flag.collider.enabled = true;
+			flag.renderer.enabled = true;
+		}
+		Implode ();
+		Destroy(this.gameObject);
+	}
 
 	internal void BurnFuel() {
 		fuel -= rigidbody.velocity.magnitude * Time.deltaTime;
-	}
-
-	public void OnDeath() {
-		Implode ();
 	}
 }

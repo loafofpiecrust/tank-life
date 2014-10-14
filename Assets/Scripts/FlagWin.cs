@@ -21,7 +21,7 @@ public class FlagWin : Pickup {
 		if((p.GetComponentInChildren<Flag>() is Flag
 		   && p.flags >= minimumFlagsRequired) 
 		   && p.neededWins == 1){
-			Application.LoadLevel(++levelCount);
+			Application.LoadLevel("Lv" + (1 + levelCount));
 		}
 		else if (p.GetComponentInChildren<Flag>() is Flag
 		         && p.flags >= minimumFlagsRequired){

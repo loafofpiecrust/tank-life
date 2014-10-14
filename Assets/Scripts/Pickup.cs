@@ -12,7 +12,7 @@ public abstract class Pickup : MonoBehaviour {
 		Debug.Log("collided");
 		Player p = col.GetComponent<Player>();
 		Debug.Log("Player received.");
-		if (p.isP1){
+
 			Debug.Log("Is player?");
 			bool keep = DoEffect (p);
 			if(!stayingOut && !keep){
@@ -26,7 +26,6 @@ public abstract class Pickup : MonoBehaviour {
 				Destroy(this.gameObject);
 			}
 		}
-	}
 
 	internal abstract bool DoEffect(Player p);
 
