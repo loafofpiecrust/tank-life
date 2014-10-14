@@ -137,7 +137,7 @@ public class Player : MonoBehaviour {
 			flag.renderer.enabled = true;
 		}
 		Implode ();
-		Destroy(this.gameObject);
+		Destroy(this.gameObject, 3.0f);
 	}
 
 	internal void BurnFuel() {
