@@ -23,7 +23,7 @@ public abstract class AI : MonoBehaviour {
 	protected const int playersLayer = 1 << 10;
 	protected const int wallsLayer = 1 << 9;
 	protected const int pickupsLayer = 1 << 8;
-
+	protected const int goalsLayer = 1 << 11;
 
 	public abstract void StepLogic();
 
@@ -76,7 +76,7 @@ public abstract class AI : MonoBehaviour {
 			Vector3 dir = Vector3.Normalize (hit.transform.position - transform.position);
 			Debug.DrawLine(transform.position, transform.position+(dir*visibleRadius), Color.green);
 			Debug.Log ("WE SEE SOME SHIT");
-			if(Physics.Raycast (transform.position+(dir*1.5f), dir, visibleRadius, ~layerMask)) {
+			if(!Physics.Raycast (transform.position+(dir*1.0f), dir, visibleRadius, ~layerMask)) {
 				Debug.Log ("Its in the right layer!");
 				return hit.transform;
 			}
@@ -84,7 +84,7 @@ public abstract class AI : MonoBehaviour {
 		return null;
 	}
 	
-	public bool IsBlocked(int layerMask, Vector3 inDir, float clearance = 0.5f) {
+	public bool IsBlocked(int layerMask, Vector3 inDir, float clearance = 0.51f) {
 		Vector3 startBase = transform.position + (inDir * clearance);
 		Vector3 start1 = startBase + (Vector3.Cross (inDir, transform.forward) * clearance);
 		Vector3 start2 = startBase - (Vector3.Cross (inDir, transform.forward) * clearance);
