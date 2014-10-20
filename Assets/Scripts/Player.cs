@@ -30,6 +30,7 @@ public class Player : MonoBehaviour {
 	public GameObject bullet;
 	public float bulletSpeed = 10.0f;
 	public float bulletForce = 100.0f;
+	public float bulletDamage = 10.0f;
 	bool onGround = true;
 	public Transform cannon = null;
 	public Transform cannonBarrel = null;
@@ -59,8 +60,7 @@ public class Player : MonoBehaviour {
 		}
 
 		if(health<=0.0f){
-			die();
-			Destroy(gameObject);
+			Die();
 		}
 
 		if (currReload > 0.0f) {
@@ -102,6 +102,7 @@ public class Player : MonoBehaviour {
 		pos.z = -.3f;
 		GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
 		Bullet b = obj.GetComponent<Bullet>();
+		b.damage = bulletDamage;
 		b.player = this;
 		obj.rigidbody.AddForce (cannonBarrel.up * bulletSpeed);
 		this.rigidbody.AddExplosionForce (bulletForce, pos, 10.0f);
@@ -116,28 +117,32 @@ public class Player : MonoBehaviour {
 	public void Implode() {
 		for(int i = 0; i < transform.childCount; ++i) {
 			GameObject child = transform.GetChild (i).gameObject;
-			child.transform.parent = null;
+		//	child.transform.parent = null;
 			if(!child.rigidbody) {
 				child.AddComponent<Rigidbody>();
 			}
-			child.rigidbody.useGravity = false;
-			child.rigidbody.AddExplosionForce (100.0f, transform.position, 3.0f);
+			if(!child.collider) {
+				BoxCollider bc = child.AddComponent<BoxCollider>();
+				bc.size = new Vector3(bc.size.x, bc.size.y, 0.25f);
+			}
+		//	child.rigidbody.useGravity = false;
+			child.rigidbody.AddExplosionForce (1000.0f, transform.position - transform.forward*2.0f, 3.0f);
+			Destroy (child, 5.0f);
 		}
 	}
 
-	public void die(){
+	public void Die(){
 		Component flag = inv.GetComponentInChildren<Flag>();
 		if ( flag is Flag){
 			flag.transform.parent = null;
 			flag.collider.enabled = true;
 			flag.renderer.enabled = true;
 		}
+		Implode ();
 		Destroy(this.gameObject);
 	}
 
 	internal void BurnFuel() {
 		fuel -= rigidbody.velocity.magnitude * Time.deltaTime;
 	}
-
-
 }

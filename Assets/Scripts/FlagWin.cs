@@ -28,8 +28,8 @@ public class FlagWin : Pickup
 						Debug.Log ("FOREACHING!");
 						if (o.GetComponent<Player> ().neededWins <= 0) {
 								jobsDone = true;
+								Debug.Log ("Job's Done");				
 								break;
-								Debug.Log ("Job's Done");
 						} else {
 								jobsDone = false;
 								Debug.Log ("Job's not Done");
@@ -39,16 +39,16 @@ public class FlagWin : Pickup
 						&& p.flags >= minimumFlagsRequired)
 						&& p.neededWins <= 1
 						&& jobsDone) {
-			Debug.Log("You Win");
+						Debug.Log ("You Win");
 						Application.LoadLevel ("Lv" + (1 + levelCount));
 				} else if (p.GetComponentInChildren<Flag> () is Flag
 						&& p.flags >= minimumFlagsRequired) {
 						stayingOut = true;
 						p.neededWins -= 1;
-			Debug.Log("You need more wins");
+						Debug.Log ("You need more wins");
 				} else {
 						stayingOut = true;
-			Debug.Log("else?");
+						Debug.Log ("else?");
 				}
 		
 				return false;
