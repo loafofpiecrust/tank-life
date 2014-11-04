@@ -28,4 +28,11 @@ public class Mine : Pickup{
 			return true;
 		}
 	}
+
+	internal override void Drop() {
+		transform.parent = null;
+		transform.Translate (-transform.parent.forward * 3.0f);
+		renderer.enabled = true;
+		collider.enabled = true;
+	}
 }

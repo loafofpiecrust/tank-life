@@ -71,10 +71,7 @@ public class Player : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.LeftShift)){
 			Mine mine = inv.GetComponentInChildren<Mine>();
 			if(mine){
-				mine.transform.parent = null;
-				mine.transform.Translate (-transform.forward * 3.0f);
-				mine.renderer.enabled = true;
-				mine.collider.enabled = true;
+				mine.Drop();
 			}
 		}
 
@@ -114,7 +111,7 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	public void Implode() {
+	void Implode() {
 		for(int i = 0; i < transform.childCount; ++i) {
 			GameObject child = transform.GetChild (i).gameObject;
 		//	child.transform.parent = null;
