@@ -13,7 +13,7 @@ public class Player : MonoBehaviour {
 	internal float maxFuel = 100.0f;
 	internal int kills;
 	internal int flags;
-
+	internal GameObject[] otherPlayers; 
 	internal float reloadTime = 0.2f;
 	private float currReload = 0.0f;
 
@@ -46,6 +46,8 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		otherPlayers = GameObject.FindGameObjectsWithTag("Player");
+
 		if (armor < 100.0f) {
 			armor += (armorRegen + armorRegenBonus) * Time.deltaTime;
 		}
