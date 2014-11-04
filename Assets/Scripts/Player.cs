@@ -142,5 +142,8 @@ public class Player : MonoBehaviour {
 
 	internal void BurnFuel() {
 		fuel -= rigidbody.velocity.magnitude * Time.deltaTime;
+		if (fuel <= 0.0f) {
+
+		}
 	}
 }

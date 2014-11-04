@@ -24,6 +24,7 @@ public abstract class AI : MonoBehaviour {
 	protected const int wallsLayer = 1 << 9;
 	protected const int pickupsLayer = 1 << 8;
 	protected const int goalsLayer = 1 << 11;
+	protected const int allLayers = 0xFF;
 
 	public abstract void StepLogic();
 
@@ -69,7 +70,7 @@ public abstract class AI : MonoBehaviour {
 		}
 	}
 	
-	public Transform GetNearestVisibleThing(int layerMask) {
+	public Transform GetNearestVisibleThing(int layerMask = allLayers) {
 		RaycastHit hit;
 		bool cast = Physics.SphereCast (transform.position, visibleRadius, transform.forward, out hit, visibleRadius);
 		if (cast && hit.transform != this.transform) {
