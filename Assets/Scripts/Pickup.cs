@@ -28,6 +28,6 @@ public abstract class Pickup : MonoBehaviour {
 		}
 
 	internal abstract bool DoEffect(Player p);
-	internal void Drop() {}
+	internal virtual void Drop() {}
 
 }
