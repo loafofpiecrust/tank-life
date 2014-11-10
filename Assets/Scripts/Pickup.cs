@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
+namespace Stuff{
 public abstract class Pickup : MonoBehaviour {
 
 	internal bool stayingAlive;
@@ -30,4 +30,5 @@ public abstract class Pickup : MonoBehaviour {
 	internal abstract bool DoEffect(Player p);
 	internal virtual void Drop() {}
 
+}
 }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+namespace Stuff{
 public class HealthPackP : Pickup {
 
 	public float amount;
@@ -20,4 +20,5 @@ public class HealthPackP : Pickup {
 		return false;
 	}
 
+}
 }

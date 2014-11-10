@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+namespace Stuff{
 public class FuelP : Pickup{
 
 	public float amount;
@@ -21,4 +21,5 @@ public class FuelP : Pickup{
 		return false;
 	}
 
+}
 }

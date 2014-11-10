@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-[RequireComponent (typeof (Player))]
-public abstract class AI : MonoBehaviour {
-	
+namespace Stuff{
+pub lic abstract class AI : MonoBehaviour {
+
 	public float stepLength = 0.01f;
 	private float currStep = 0.0f;
 	
@@ -135,4 +135,5 @@ public abstract class AI : MonoBehaviour {
 	public bool IsMoved() {
 		return moveTime <= 0.0f;
 	}
+}
 }

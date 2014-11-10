@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public class Flag : Pickup {
+namespace Stuff{
+public class Flag : Stuff.Pickup {
 
 	//public int removeHealth;
 
@@ -21,4 +21,6 @@ public class Flag : Pickup {
 		p.flags++;
 		return false;
 	}
+}
+
 }
