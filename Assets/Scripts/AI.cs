@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 [RequireComponent (typeof (Player))]
@@ -71,15 +71,12 @@ public abstract class AI : MonoBehaviour {
 	}
 	
 	public Transform GetNearestVisibleThing(int layerMask = allLayers) {
-		RaycastHit hit;
-		bool cast = Physics.SphereCast (transform.position, visibleRadius, transform.forward, out hit, visibleRadius);
-		if (cast && hit.transform != this.transform) {
-			Vector3 dir = Vector3.Normalize (hit.transform.position - transform.position);
-			Debug.DrawLine(transform.position, transform.position+(dir*visibleRadius), Color.green);
-			Debug.Log ("WE SEE SOME SHIT");
-			if(!Physics.Raycast (transform.position+(dir*1.0f), dir, visibleRadius, ~layerMask)) {
-				Debug.Log ("Its in the right layer!");
-				return hit.transform;
+		RaycastHit[] hits = Physics.SphereCastAll (transform.position, visibleRadius, transform.up, Mathf.Infinity, ~layerMask);
+		foreach (RaycastHit hit in hits) {
+			Vector3 dir = hit.transform.position - transform.position;
+			RaycastHit rayHit;
+			if(Physics.Raycast (transform.position, dir, out rayHit, visibleRadius)) {
+				return rayHit.transform;
 			}
 		}
 		return null;
@@ -104,11 +101,17 @@ public abstract class AI : MonoBehaviour {
 		moveTime = time;
 	}
 	
-	public void StopMoving(float time = 0.0f) {
+	public void StopAccelerating(float time = 0.0f) {
 		moveTime = time;
 		currSpeed = 0.0f;
 	}
+
+	public void StopMoving(float time = 0.0f) {
+		StopAccelerating (time);
+		rigidbody.velocity = new Vector3 (0.0f, 0.0f, 0.0f);
+	}
 	
+
 	public void TurnTo(float deg) {
 		Turn(deg - transform.eulerAngles.z);
 	}
@@ -117,7 +120,7 @@ public abstract class AI : MonoBehaviour {
 	}
 	
 	public void TurnCannonTo(Vector3 to) {
-		player.cannon.LookAt (new Vector3(to.x,to.y,player.cannon.position.z), -Vector3.forward);
+		player.cannon.LookAt (new Vector3(to.x, to.y, player.cannon.position.z), -Vector3.forward);
 
 	//	player.cannon.LookAt (to);
 	}
