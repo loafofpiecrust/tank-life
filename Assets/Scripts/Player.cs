@@ -30,7 +30,7 @@ public class Player : MonoBehaviour {
 
 	internal GameObject bullet;
 	private float bulletSpeed = 10.0f;
-	private float bulletForce = 100.0f;
+	internal float bulletForce = 100.0f;
 	private float bulletDamage = 10.0f;
 
 		
@@ -39,9 +39,9 @@ public class Player : MonoBehaviour {
 	private ParticleSystem cannonEffect = null;
 	
 	//Stuff for Moving
-	private float moveSpeed = 100.0f;
-	private float maxMoveSpeed = 4.0f;
-	private float turnSpeed = 10.0f;
+	internal float moveSpeed = 100.0f;
+	internal float maxMoveSpeed = 4.0f;
+	internal float turnSpeed = 10.0f;
 	
 	
 

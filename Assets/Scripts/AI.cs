@@ -2,7 +2,7 @@
 using System.Collections;
 
 namespace Stuff{
-pub lic abstract class AI : MonoBehaviour {
+public abstract class AI : MonoBehaviour {
 
 	public float stepLength = 0.01f;
 	private float currStep = 0.0f;

@@ -29,7 +29,7 @@ public class Mine : Pickup{
 		}
 	}
 
-	internal override void Drop() {
+	internal void Drop() {
 		transform.parent = null;
 		transform.Translate (-transform.parent.forward * 3.0f);
 		renderer.enabled = true;
