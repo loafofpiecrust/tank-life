@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+namespace Stuff{
 public class KillWin : Pickup {
 
 	public int minimumRequiredKills;
@@ -30,4 +30,5 @@ public class KillWin : Pickup {
 		}
 		return true;
 	}
+}
 }

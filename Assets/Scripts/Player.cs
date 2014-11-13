@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+namespace Stuff {
+
+
 public class Player : MonoBehaviour {
 
-	// Non-User Editable
+	//Stats of the Player
 	internal float armor = 100.0f;
 	internal float health = 100.0f;
 	internal float armorRegen = 3.0f;
@@ -11,32 +14,36 @@ public class Player : MonoBehaviour {
 	internal float regenTime = 0.0f;
 	internal float fuel = 50.0f;
 	internal float maxFuel = 100.0f;
+	
+	//Stuff for Winning	
+	internal GameObject inv;
 	internal int kills;
 	internal int flags;
-	internal GameObject[] otherPlayers; 
+	internal GameObject[] otherPlayers;
+	internal int neededWins;
+	
+	//Stuff for Shooting
 	internal float reloadTime = 0.2f;
 	private float currReload = 0.0f;
-
 	internal int maxAmmo = 100;
 	internal int ammo = 0;
 
+	internal GameObject bullet;
+	private float bulletSpeed = 10.0f;
+	private float bulletForce = 100.0f;
+	private float bulletDamage = 10.0f;
 
-	//User Editable
-	public float moveSpeed = 100.0f;
-	public float maxMoveSpeed = 4.0f;
-	public float jumpForce = 400.0f;
-	public float turnSpeed = 10.0f;
-	public GameObject inv;
-	public GameObject bullet;
-	public float bulletSpeed = 10.0f;
-	public float bulletForce = 100.0f;
-	public float bulletDamage = 10.0f;
-	bool onGround = true;
-	public Transform cannon = null;
-	public Transform cannonBarrel = null;
-
-	public ParticleSystem cannonEffect = null;
-	public int neededWins;
+		
+	internal Transform cannon = null;
+	internal Transform cannonBarrel = null;
+	private ParticleSystem cannonEffect = null;
+	
+	//Stuff for Moving
+	private float moveSpeed = 100.0f;
+	private float maxMoveSpeed = 4.0f;
+	private float turnSpeed = 10.0f;
+	
+	
 
 
 	// Use this for initialization
@@ -66,33 +73,9 @@ public class Player : MonoBehaviour {
 		if (currReload > 0.0f) {
 			currReload -= Time.deltaTime;
 		}
-
-
-		if(Input.GetKeyDown(KeyCode.LeftShift)){
-			Mine mine = inv.GetComponentInChildren<Mine>();
-			if(mine){
-				mine.Drop();
-			}
-		}
-
-
-		if (Input.GetButtonDown ("Jump") && onGround) {
-			rigidbody.AddForce (new Vector3(0.0f, jumpForce, 0.0f));
-			onGround = false;
-		}
-
-
-		if (Input.GetButtonDown ("Fire")) {
-			FireCannon();
-		}
-
 	}
 
-	void OnCollisionEnter(Collision collision) {
-		onGround = true;
-	}
-
-	public void FireCannon() {
+	internal void FireCannon() {
 		if(!cannonBarrel || !bullet || ammo <= 0 || currReload > 0.0f) return;
 
 		Vector3 pos = cannonBarrel.position + (cannonBarrel.up * 1.0f);
@@ -111,10 +94,9 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	void Implode() {
+	private void Implode() {
 		for(int i = 0; i < transform.childCount; ++i) {
 			GameObject child = transform.GetChild (i).gameObject;
-		//	child.transform.parent = null;
 			if(!child.rigidbody) {
 				child.AddComponent<Rigidbody>();
 			}
@@ -122,13 +104,12 @@ public class Player : MonoBehaviour {
 				BoxCollider bc = child.AddComponent<BoxCollider>();
 				bc.size = new Vector3(bc.size.x, bc.size.y, 0.25f);
 			}
-		//	child.rigidbody.useGravity = false;
 			child.rigidbody.AddExplosionForce (1000.0f, transform.position - transform.forward*2.0f, 3.0f);
 			Destroy (child, 5.0f);
 		}
 	}
 
-	public void Die(){
+	internal void Die(){
 		Component flag = inv.GetComponentInChildren<Flag>();
 		if ( flag is Flag){
 			flag.transform.parent = null;
@@ -145,4 +126,5 @@ public class Player : MonoBehaviour {
 
 		}
 	}
+}
 }

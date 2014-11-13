@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public class ArmorP : Pickup {
+namespace Stuff{
+public class ArmorP : Stuff.Pickup {
 
 	public float amount;
 
@@ -19,4 +19,5 @@ public class ArmorP : Pickup {
 		p.armor += amount;
 		return false;
 	}
+}
 }

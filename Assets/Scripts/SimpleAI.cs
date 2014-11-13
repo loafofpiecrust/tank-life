@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SimpleAI : AI {
+public class SimpleAI : Stuff.AI {
 
 	private bool wallOnRight = false;
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public class ArmorRegenBoost : Pickup {
+namespace Stuff{
+public class ArmorRegenBoost : Stuff.Pickup {
 
 	public int time;
 	public float amount;
@@ -21,4 +21,5 @@ public class ArmorRegenBoost : Pickup {
 		p.regenTime = time;
 		return false;
 	}
+}
 }

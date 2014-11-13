@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+namespace Stuff{
 public class Mine : Pickup{
 
 	public float dmg;
@@ -35,4 +35,5 @@ public class Mine : Pickup{
 		renderer.enabled = true;
 		collider.enabled = true;
 	}
+}
 }

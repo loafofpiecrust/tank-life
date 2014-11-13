@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FlagWin : Pickup
+namespace Stuff{
+public class FlagWin : Stuff.Pickup
 {
 
 		public int minimumFlagsRequired;
@@ -54,4 +55,4 @@ public class FlagWin : Pickup
 				return false;
 		}
 }
-
+}

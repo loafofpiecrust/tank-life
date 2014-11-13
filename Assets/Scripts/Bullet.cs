@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+namespace Stuff{
 public class Bullet : MonoBehaviour {
 
 	public float lifeTime = 10.0f;
@@ -33,4 +33,5 @@ public class Bullet : MonoBehaviour {
 			GameObject.Destroy (gameObject);
 		}
 	}
+}
 }
