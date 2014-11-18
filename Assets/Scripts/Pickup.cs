@@ -1,36 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Stuff{
+
+namespace Stuff {
+
 	public abstract class Pickup : MonoBehaviour {
 
 		internal bool stayingAlive;
 		internal bool stayingOut;
 		internal static int levelCount=1;
-
-		//On hit event
+		
+		internal abstract bool DoEffect(Player p);
+		
+		internal virtual void Drop() {
+			transform.parent = null;
+			transform.Translate (-transform.parent.forward * 3.0f);
+			renderer.enabled = true;
+			collider.enabled = true;
+		}
 
 		void OnTriggerEnter(Collider col) {
-
+			Debug.Log("collided");
 			Player p = col.GetComponent<Player>();
-				bool keep = DoEffect (p);
-
-			// If you want to store it in the player inv.
-
-				if(!stayingOut && !keep){
-					this.transform.parent = p.inv.transform;
-					this.collider.enabled = false;
-					this.renderer.enabled = false;
-				}
-
-			// If you don't want it in the player inv & you want it off the map.
-
-				else if(!stayingAlive){
-					Destroy(this.gameObject);
-				}
+			if (!p){
+				return;
 			}
-
-		internal abstract bool DoEffect(Player p);
-
+			Debug.Log("Player received.");
+			bool keep = DoEffect (p);
+			if(!stayingOut && !keep){
+				Debug.Log("Do you want to keep");
+				this.transform.parent = p.inv.transform;
+				this.collider.enabled = false;
+				this.renderer.enabled = false;
+			}
+			else if(!stayingAlive) {
+				Debug.Log("Go away now");
+				Destroy(this.gameObject);
+			}
+		}
 	}
 }

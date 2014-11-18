@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 namespace Stuff{
-	public class Flag : Stuff.Pickup {
+	public class Flag : Pickup {
 
 		// Use this for initialization
 		void Start () {
@@ -13,6 +13,7 @@ namespace Stuff{
 		
 		}
 
+		// Registers that a flag has been picked up.
 		internal override bool DoEffect (Player p){
 			p.flags++;
 			return false;

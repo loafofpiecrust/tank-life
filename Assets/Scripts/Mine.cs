@@ -1,39 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
-namespace Stuff{
-public class Mine : Pickup{
+namespace Stuff {
+	public class Mine : Pickup{
 
-	public float dmg;
-	public int colCount = 0;
-	
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	internal override bool DoEffect(Player p){
-		if (colCount == 0){
-			colCount++;
-			//Debug.Log("Mine collision : " + colCount);
-			return false;
+		public float dmg;
+		public int colCount = 0;
+		
+		// Use this for initialization
+		void Start () {
+		
 		}
-		else {
-			p.health -=dmg;
-			//Debug.Log("Die you fuck");
-			return true;
+		
+		// Update is called once per frame
+		void Update () {
+		
 		}
-	}
 
-	internal void Drop() {
-		transform.parent = null;
-		transform.Translate (-transform.parent.forward * 3.0f);
-		renderer.enabled = true;
-		collider.enabled = true;
+
+		internal override bool DoEffect(Player p){
+			if (colCount == 0){
+				colCount++;
+				//Debug.Log("Mine collision : " + colCount);
+				return false;
+			}
+			else {
+				p.health -=dmg;
+				//Debug.Log("Die you fuck");
+				return true;
+			}
+		}
+
+		internal override void Drop() {
+		}
+
 	}
-}
 }

@@ -1,37 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
-namespace Stuff{
-public class Bullet : MonoBehaviour {
+namespace Stuff {
+	public class Bullet : MonoBehaviour {
 
-	public float lifeTime = 10.0f;
-	public float damage = 5.0f;
-	internal Player player;
+		public float lifeTime = 10.0f;
+		public float damage = 5.0f;
+		internal Player player;
 
-	// Use this for initialization
-	void Start () {
-		GameObject.Destroy (gameObject, lifeTime);
-	}
-	
-	// Update is called once per frame
-	void Update () {
+		// Use this for initialization
+		void Start () {
+			GameObject.Destroy (gameObject, lifeTime);
+		}
 		
-	}
+		// Update is called once per frame
+		void Update () {
+			
+		}
 
-	void OnCollisionEnter(Collision col) {
-		// cause damage
-		Player other = col.gameObject.GetComponent<Player>();
-		if (other) {
-			other.rigidbody.AddForceAtPosition (Vector3.Normalize (rigidbody.velocity) * player.bulletForce * 0.6f, col.contacts[0].point);
-			if (other.health <= damage) {
-				other.health -= damage;
-				player.kills++;
+		void OnCollisionEnter(Collision col) {
+			// Do Damage
+			Player other = col.gameObject.GetComponent<Player>();
+			if (other) {
+				other.rigidbody.AddForceAtPosition (Vector3.Normalize (rigidbody.velocity) * player.bulletForce * 0.6f, col.contacts[0].point);
+				if (other.health <= damage) {
+					other.health -= damage;
+					player.kills++;
+				}
+				else {
+					other.health -= damage;
+				}
+				// Self-destruct
+				GameObject.Destroy (gameObject);
 			}
-			else {
-				other.health -= damage;
-			}
-			// destroy self
-			GameObject.Destroy (gameObject);
 		}
 	}
-}
 }

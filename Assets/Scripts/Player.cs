@@ -4,127 +4,125 @@ using System.Collections;
 namespace Stuff {
 
 
-public class Player : MonoBehaviour {
 
-	//Stats of the Player
-	internal float armor = 100.0f;
-	internal float health = 100.0f;
-	internal float armorRegen = 3.0f;
-	internal float armorRegenBonus = 0.0f;
-	internal float regenTime = 0.0f;
-	internal float fuel = 50.0f;
-	internal float maxFuel = 100.0f;
-	
-	//Stuff for Winning	
-	internal GameObject inv;
-	internal int kills;
-	internal int flags;
-	internal GameObject[] otherPlayers;
-	internal int neededWins;
-	
-	//Stuff for Shooting
-	internal float reloadTime = 0.2f;
-	private float currReload = 0.0f;
-	internal int maxAmmo = 100;
-	internal int ammo = 0;
+	public class Player : MonoBehaviour {
 
-	internal GameObject bullet;
-	private float bulletSpeed = 10.0f;
-	internal float bulletForce = 100.0f;
-	private float bulletDamage = 10.0f;
-
+		//Stats of the Player
+		internal float armor = 100.0f;
+		internal float health = 100.0f;
+		internal float armorRegen = 3.0f;
+		internal float armorRegenBonus = 0.0f;
+		internal float regenTime = 0.0f;
+		internal float fuel = 50.0f;
+		internal float maxFuel = 100.0f;
 		
-	internal Transform cannon = null;
-	internal Transform cannonBarrel = null;
-	private ParticleSystem cannonEffect = null;
-	
-	//Stuff for Moving
-	internal float moveSpeed = 100.0f;
-	internal float maxMoveSpeed = 4.0f;
-	internal float turnSpeed = 10.0f;
-	
-	
+		//Stuff for Winning	
+		public GameObject inv;
+		internal int kills;
+		internal int flags;
+		internal static Component[] playerList;
+		internal int neededWins;
+		
+		//Stuff for Shooting
+		internal float reloadTime = 0.2f;
+		private float currReload = 0.0f;
+		internal int maxAmmo = 100;
+		internal int ammo = 0;
+
+		public GameObject bullet;
+		private float bulletSpeed = 10.0f;
+		internal float bulletForce = 100.0f;
+		private float bulletDamage = 10.0f;
+
+			
+		public Transform cannon = null;
+		public Transform cannonBarrel = null;
+		public ParticleSystem cannonEffect = null;
+		
+		//Stuff for Moving
+		internal float moveSpeed = 100.0f;
+		internal float maxMoveSpeed = 4.0f;
+		internal float turnSpeed = 100.0f;
 
 
-	// Use this for initialization
-	void Start () {
-		ammo = maxAmmo;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		otherPlayers = GameObject.FindGameObjectsWithTag("Player");
-
-		if (armor < 100.0f) {
-			armor += (armorRegen + armorRegenBonus) * Time.deltaTime;
+		// Use this for initialization
+		void Start () {
+			ammo = maxAmmo;
+			playerList = GetComponents(typeof(Player));
 		}
 		
-		if (regenTime > 0.0f) {
-			regenTime -= Time.deltaTime;
-		} else if (regenTime == 0.0f) {
-			regenTime = -1.0f;
-			armorRegenBonus = 0.0f;
-		}
-
-		if(health<=0.0f){
-			Die();
-		}
-
-		if (currReload > 0.0f) {
-			currReload -= Time.deltaTime;
-		}
-	}
-
-	internal void FireCannon() {
-		if(!cannonBarrel || !bullet || ammo <= 0 || currReload > 0.0f) return;
-
-		Vector3 pos = cannonBarrel.position + (cannonBarrel.up * 1.0f);
-		pos.z = -.3f;
-		GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
-		Bullet b = obj.GetComponent<Bullet>();
-		b.damage = bulletDamage;
-		b.player = this;
-		obj.rigidbody.AddForce (cannonBarrel.up * bulletSpeed);
-		this.rigidbody.AddExplosionForce (bulletForce, pos, 10.0f);
-		ammo--;
-		currReload = reloadTime;
-
-		if (cannonEffect) {
-			cannonEffect.Emit (50);
-		}
-	}
-
-	private void Implode() {
-		for(int i = 0; i < transform.childCount; ++i) {
-			GameObject child = transform.GetChild (i).gameObject;
-			if(!child.rigidbody) {
-				child.AddComponent<Rigidbody>();
+		// Update is called once per frame
+		void Update () {
+			if (armor < 100.0f) {
+				armor += (armorRegen + armorRegenBonus) * Time.deltaTime;
 			}
-			if(!child.collider) {
-				BoxCollider bc = child.AddComponent<BoxCollider>();
-				bc.size = new Vector3(bc.size.x, bc.size.y, 0.25f);
+			
+			if (regenTime > 0.0f) {
+				regenTime -= Time.deltaTime;
+			} else if (regenTime == 0.0f) {
+				regenTime = -1.0f;
+				armorRegenBonus = 0.0f;
 			}
-			child.rigidbody.AddExplosionForce (1000.0f, transform.position - transform.forward*2.0f, 3.0f);
-			Destroy (child, 5.0f);
+
+			if(health<=0.0f){
+				Die();
+			}
+
+			if (currReload > 0.0f) {
+				currReload -= Time.deltaTime;
+			}
+		}
+
+		internal void FireCannon() {
+			if(!cannonBarrel || !bullet || ammo <= 0 || currReload > 0.0f) return;
+
+			Vector3 pos = cannonBarrel.position + (cannonBarrel.up * 1.0f);
+			//pos.z = -.3f;
+			GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
+			Bullet b = obj.GetComponent<Bullet>();
+			b.damage = bulletDamage;
+			b.player = this;
+			obj.rigidbody.AddForce (cannonBarrel.up * bulletSpeed);
+			this.rigidbody.AddExplosionForce (bulletForce, pos, 10.0f);
+			ammo--;
+			currReload = reloadTime;
+
+			if (cannonEffect) {
+				cannonEffect.Emit (50);
+			}
+		}
+
+		private void Implode() {
+			for(int i = 0; i < transform.childCount; ++i) {
+				GameObject child = transform.GetChild (i).gameObject;
+				if(!child.rigidbody) {
+					child.AddComponent<Rigidbody>();
+				}
+				if(!child.collider) {
+					BoxCollider bc = child.AddComponent<BoxCollider>();
+					bc.size = new Vector3(bc.size.x, bc.size.y, 0.25f);
+				}
+				child.rigidbody.AddExplosionForce (1000.0f, transform.position - transform.forward*2.0f, 3.0f);
+				Destroy (child, 5.0f);
+			}
+		}
+
+		internal void Die(){
+			Component flag = inv.GetComponentInChildren<Flag>();
+			if ( flag is Flag){
+				flag.transform.parent = null;
+				flag.collider.enabled = true;
+				flag.renderer.enabled = true;
+			}
+			Implode ();
+			Destroy(this.gameObject, 3.0f);
+		}
+
+		internal void BurnFuel() {
+			fuel -= rigidbody.velocity.magnitude * Time.deltaTime;
+			if (fuel <= 0.0f) {
+
+			}
 		}
 	}
-
-	internal void Die(){
-		Component flag = inv.GetComponentInChildren<Flag>();
-		if ( flag is Flag){
-			flag.transform.parent = null;
-			flag.collider.enabled = true;
-			flag.renderer.enabled = true;
-		}
-		Implode ();
-		Destroy(this.gameObject, 3.0f);
-	}
-
-	internal void BurnFuel() {
-		fuel -= rigidbody.velocity.magnitude * Time.deltaTime;
-		if (fuel <= 0.0f) {
-
-		}
-	}
-}
 }
