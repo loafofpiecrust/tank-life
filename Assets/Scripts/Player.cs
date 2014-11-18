@@ -103,12 +103,7 @@ namespace Stuff {
 		}
 
 		internal void Die(){
-			Component flag = inv.GetComponentInChildren<Flag>();
-			if ( flag is Flag){
-				flag.transform.parent = null;
-				flag.collider.enabled = true;
-				flag.renderer.enabled = true;
-			}
+			inv.GetComponentInChildren<Flag>().Drop ();
 			Implode ();
 			Destroy(this.gameObject, 3.0f);
 		}
