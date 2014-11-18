@@ -18,7 +18,7 @@ namespace Stuff {
 		}
 
 		void OnCollisionEnter(Collision col) {
-			// cause damage
+			// Do Damage
 			Player other = col.gameObject.GetComponent<Player>();
 			if (other) {
 				other.rigidbody.AddForceAtPosition (Vector3.Normalize (rigidbody.velocity) * player.bulletForce * 0.6f, col.contacts[0].point);
@@ -29,7 +29,7 @@ namespace Stuff {
 				else {
 					other.health -= damage;
 				}
-				// destroy self
+				// Self-destruct
 				GameObject.Destroy (gameObject);
 			}
 		}

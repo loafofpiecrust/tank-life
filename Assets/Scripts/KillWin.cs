@@ -17,17 +17,16 @@ public class KillWin : Pickup {
 	internal override bool DoEffect(Player p){
 		
 		stayingAlive=true;
+		stayingOut = true;
+
 		if((p.kills >= minimumRequiredKills)
 		   && p.neededWins == 1){
 			Application.LoadLevel(++levelCount);
 		}
 		else if(p.kills >= minimumRequiredKills){
 			p.neededWins -= 1;
-			stayingOut = true;
 		}
-		else{
-			stayingOut = true;
-		}
+
 		return true;
 	}
 }

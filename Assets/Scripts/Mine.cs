@@ -16,6 +16,7 @@ namespace Stuff {
 		
 		}
 
+
 		internal override bool DoEffect(Player p){
 			if (colCount == 0){
 				colCount++;
@@ -31,5 +32,6 @@ namespace Stuff {
 
 		internal override void Drop() {
 		}
+
 	}
 }

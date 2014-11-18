@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 namespace Stuff {
+
 	public abstract class Pickup : MonoBehaviour {
 
 		internal bool stayingAlive;
@@ -20,6 +22,9 @@ namespace Stuff {
 		void OnTriggerEnter(Collider col) {
 			Debug.Log("collided");
 			Player p = col.GetComponent<Player>();
+			if (!p){
+				return;
+			}
 			Debug.Log("Player received.");
 			bool keep = DoEffect (p);
 			if(!stayingOut && !keep){

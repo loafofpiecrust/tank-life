@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 namespace Stuff {
 
 	public class FlagWin : Stuff.Pickup
@@ -44,5 +45,4 @@ namespace Stuff {
 			return false;
 		}
 	}
-
 }

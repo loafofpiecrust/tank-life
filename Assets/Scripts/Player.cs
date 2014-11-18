@@ -2,8 +2,6 @@
 using System.Collections;
 
 namespace Stuff {
-
-
 	public class Player : MonoBehaviour {
 
 		//Stats of the Player
@@ -16,7 +14,7 @@ namespace Stuff {
 		internal float maxFuel = 100.0f;
 		
 		//Stuff for Winning	
-		internal GameObject inv;
+		public GameObject inv;
 		internal int kills;
 		internal int flags;
 		internal int neededWins;
@@ -41,7 +39,6 @@ namespace Stuff {
 		internal float moveSpeed = 100.0f;
 		internal float maxMoveSpeed = 4.0f;
 		internal float turnSpeed = 100.0f;
-		
 
 
 		// Use this for initialization
