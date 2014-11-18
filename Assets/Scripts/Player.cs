@@ -19,7 +19,6 @@ namespace Stuff {
 		internal GameObject inv;
 		internal int kills;
 		internal int flags;
-		internal static ArrayList playerList;
 		internal int neededWins;
 		
 		//Stuff for Shooting
@@ -47,7 +46,6 @@ namespace Stuff {
 
 		// Use this for initialization
 		void Start () {
-			playerList.Add (this);
 			ammo = maxAmmo;
 		}
 		

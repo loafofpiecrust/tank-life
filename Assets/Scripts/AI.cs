@@ -20,7 +20,7 @@ namespace Stuff {
 		private float currCannonAngle = 0.0f;
 		private float cannonTurnTime = 0.0f;
 
-		protected const int playersLayer = 1 << 10;
+		protected static int playersLayer = LayerMask.GetMask ("Player");
 		protected const int wallsLayer = 1 << 9;
 		protected const int pickupsLayer = 1 << 8;
 		protected const int goalsLayer = 1 << 11;
@@ -71,26 +71,35 @@ namespace Stuff {
 		}
 		
 		public Transform GetNearestVisibleThing(int layerMask = allLayers) {
-			RaycastHit[] hits = Physics.SphereCastAll (transform.position, visibleRadius, transform.up, Mathf.Infinity, ~layerMask);
+			RaycastHit[] hits = Physics.SphereCastAll (transform.position, visibleRadius, transform.up, Mathf.Infinity, layerMask);
 			Transform nearest = null;
-			float nearestDist = 100.0f;
+			float nearestDist = visibleRadius;
 			foreach (RaycastHit hit in hits) {
+				if(hit.transform == this.transform) {
+					continue;
+				}
+
+				Debug.Log ("We are seeing: "+hit.transform.name);
 				Vector3 dir = hit.transform.position - transform.position;
+				Vector3 normDir = Vector3.Normalize (dir)*0.5f;
 				RaycastHit rayHit;
-				if(Physics.Raycast (transform.position, dir, out rayHit, visibleRadius)) {
-					if (dir.magnitude <= nearestDist) {
+				Debug.DrawLine (transform.position, transform.position+dir, Color.red);
+				if(Physics.Raycast (transform.position + normDir, dir, out rayHit, visibleRadius)) {
+					if (dir.magnitude <= nearestDist && rayHit.transform == hit.transform) {
 						nearestDist = dir.magnitude;
 						nearest = rayHit.transform;
 					}
 				}
 			}
+
 			return nearest;
 		}
 		
 		public bool IsBlocked(int layerMask, Vector3 inDir, float clearance = 0.51f) {
 			Vector3 startBase = transform.position + (inDir * clearance);
-			Vector3 start1 = startBase + (Vector3.Cross (inDir, transform.forward) * clearance);
-			Vector3 start2 = startBase - (Vector3.Cross (inDir, transform.forward) * clearance);
+			Vector3 across = Vector3.Cross (inDir, transform.forward) * clearance;
+			Vector3 start1 = startBase + across;
+			Vector3 start2 = startBase - across;
 			Debug.DrawLine(startBase, startBase+(inDir*dangerRadius), Color.green);
 			return Physics.Raycast (start1, inDir, dangerRadius, layerMask) || Physics.Raycast (start2, inDir, dangerRadius, layerMask);
 		}
@@ -125,7 +134,7 @@ namespace Stuff {
 		}
 		
 		public void TurnCannonTo(Vector3 to) {
-			player.cannon.LookAt (new Vector3(to.x, to.y, player.cannon.position.z), Vector3.up);
+			player.cannon.LookAt (new Vector3(to.x, to.y, player.cannon.position.z), player.cannon.up);
 
 		//	player.cannon.LookAt (to);
 		}
