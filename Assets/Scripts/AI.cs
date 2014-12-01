@@ -63,7 +63,7 @@ namespace Stuff {
 				currCannonAngle -= amt;
 			}
 			
-			if (currAngle > 0.5f || currAngle < -0.5f) {
+			if (!(currAngle < 0.5f && currAngle > -0.5f)) {
 				float dir = Mathf.Sign(currAngle);
 				float amt = dir * player.turnSpeed * Time.deltaTime;
 				transform.Rotate (new Vector3(0.0f, 0.0f, amt));
@@ -82,7 +82,7 @@ namespace Stuff {
 
 				Debug.Log ("We are seeing: "+hit.transform.name);
 				Vector3 dir = hit.transform.position - transform.position;
-				Vector3 normDir = Vector3.Normalize (dir)*0.5f;
+				Vector3 normDir = Vector3.Normalize (dir)*1.0f;
 				RaycastHit rayHit;
 				Debug.DrawLine (transform.position, transform.position+dir, Color.red);
 				if(Physics.Raycast (transform.position + normDir, dir, out rayHit, visibleRadius)) {
