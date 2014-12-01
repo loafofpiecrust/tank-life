@@ -26,7 +26,7 @@ namespace Stuff {
 		internal int ammo = 0;
 
 		public GameObject bullet;
-		private float bulletSpeed = 10.0f;
+		private float bulletSpeed = 1000.0f;
 		internal float bulletForce = 100.0f;
 		private float bulletDamage = 10.0f;
 
