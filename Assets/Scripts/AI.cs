@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace Stuff {
 	[RequireComponent (typeof (Player))]
-	[RequireComponent (typeof (DetectionArea))]
+	[RequireComponent (typeof (SphereCollider))]
 	public abstract class AI : MonoBehaviour {
 
 		public float stepLength = 0.1f;
@@ -35,6 +35,10 @@ namespace Stuff {
 		// Use this for initialization
 		void Start () {
 			player = GetComponent<Player> ();
+			
+			SphereCollider sphere = GetComponent<SphereCollider> ();
+			sphere.isTrigger = true;
+			sphere.radius = visibleRadius;
 		}
 		
 		// Update is called once per frame
@@ -71,6 +75,17 @@ namespace Stuff {
 				float amt = dir * player.turnSpeed * Time.deltaTime;
 				transform.Rotate (new Vector3(0.0f, 0.0f, amt));
 				currAngle -= amt;
+			}
+		}
+
+		public void OnTriggerStay(Collider other) {
+			RaycastHit hit;
+			Vector3 dir = other.transform.position - transform.position;
+			Color c = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
+			Physics.Raycast (transform.position, dir, out hit);
+			Debug.DrawLine (transform.position, hit.collider.transform.position, c);
+			if(hit.collider == other) {
+				SeeObject (other.transform);
 			}
 		}
 		

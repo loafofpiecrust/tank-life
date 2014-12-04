@@ -2,6 +2,8 @@
 using System.Collections;
 
 namespace Stuff {
+	
+	[RequireComponent (typeof (BoxCollider))]
 	public class Player : MonoBehaviour {
 
 		//Stats of the Player
@@ -20,15 +22,15 @@ namespace Stuff {
 		internal int neededWins;
 		
 		//Stuff for Shooting
-		internal float reloadTime = 0.2f;
+		internal float reloadTime = 0.4f;
 		private float currReload = 0.0f;
-		internal int maxAmmo = 100;
+		internal int maxAmmo = 20;
 		internal int ammo = 0;
 
 		public GameObject bullet;
-		private float bulletSpeed = 10.0f;
+		private float bulletSpeed = 100.0f;
 		internal float bulletForce = 100.0f;
-		private float bulletDamage = 10.0f;
+		private float bulletDamage = 15.0f;
 
 			
 		public Transform cannon = null;
@@ -73,7 +75,7 @@ namespace Stuff {
 
 			Vector3 pos = cannonBarrel.position + (cannonBarrel.up * 1.0f);
 			//pos.z = -.3f;
-			GameObject obj = Object.Instantiate (bullet, pos, Quaternion.identity) as GameObject;
+			GameObject obj = Object.Instantiate (bullet, pos, cannonBarrel.rotation) as GameObject;
 			Bullet b = obj.GetComponent<Bullet>();
 			b.damage = bulletDamage;
 			b.player = this;

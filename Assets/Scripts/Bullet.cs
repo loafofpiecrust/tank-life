@@ -21,6 +21,8 @@ namespace Stuff {
 			// Do Damage
 			Player other = col.gameObject.GetComponent<Player>();
 			if (other) {
+				particleSystem.Play();
+
 				other.rigidbody.AddForceAtPosition (Vector3.Normalize (rigidbody.velocity) * player.bulletForce * 0.6f, col.contacts[0].point);
 				if (other.health <= damage) {
 					other.health -= damage;
@@ -30,7 +32,9 @@ namespace Stuff {
 					other.health -= damage;
 				}
 				// Self-destruct
-				GameObject.Destroy (gameObject);
+				renderer.enabled = false;
+				collider.enabled = false;
+				GameObject.Destroy (gameObject, 1.0f);
 			}
 		}
 	}

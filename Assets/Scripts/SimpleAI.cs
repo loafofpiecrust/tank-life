@@ -47,6 +47,7 @@ public class SimpleAI : AI {
 		if (nearestPlayer) {
 			Debug.Log ("VISIBLE PLAYER!! at "+nearestPlayer.transform.position);
 			TurnCannonTo (nearestPlayer.transform.position);
+			player.FireCannon ();
 			nearestPlayer = null;
 		}
 	}
