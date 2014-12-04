@@ -17,7 +17,7 @@ namespace Stuff {
 		public GameObject inv;
 		internal int kills;
 		internal int flags;
-		internal int neededWins;
+		public int neededWins;
 		
 		//Stuff for Shooting
 		internal float reloadTime = 0.2f;
