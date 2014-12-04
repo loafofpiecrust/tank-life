@@ -5,6 +5,8 @@ using Stuff;
 public class SimpleAI : AI {
 
 	private bool wallOnRight = false;
+	private float nearestPlayerDist = 100.0f;
+	private Player nearestPlayer = null;
 
 	public override void StepLogic() {
 		rigidbody.inertiaTensor = new Vector3(1, 1, 1);
@@ -42,10 +44,22 @@ public class SimpleAI : AI {
 			wallOnRight = false;
 		}
 
-		Transform p = GetNearestVisibleThing(playersLayer);
-		if (p) {
-			Debug.Log ("VISIBLE PLAYER!! at "+p.position);
-			TurnCannonTo (p.position);
+		if (nearestPlayer) {
+			Debug.Log ("VISIBLE PLAYER!! at "+nearestPlayer.transform.position);
+			TurnCannonTo (nearestPlayer.transform.position);
+			player.FireCannon ();
+			nearestPlayer = null;
+		}
+	}
+
+	public override void SeeObject(Transform other) {
+		Player pl = other.GetComponent<Player> ();
+		if (pl) {
+			Debug.Log ("we see a player");
+			if(Vector3.Distance (transform.position, other.position) < nearestPlayerDist) {
+				Debug.Log ("NEAREST VISIBLE PLAYER IS AT "+other.position);
+				nearestPlayer = other.GetComponent<Player>();
+			}
 		}
 	}
 

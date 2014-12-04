@@ -3,12 +3,14 @@ using System.Collections;
 
 
 namespace Stuff {
+	[RequireComponent (typeof (Player))]
+	[RequireComponent (typeof (SphereCollider))]
 	public abstract class AI : MonoBehaviour {
 
-		public float stepLength = 0.01f;
+		public float stepLength = 0.1f;
 		private float currStep = 0.0f;
 		
-		public float visibleRadius = 5.0f;
+		public float visibleRadius = 10.0f;
 		public float dangerRadius = 1.0f;
 		
 		protected Player player;
@@ -28,10 +30,15 @@ namespace Stuff {
 		protected const int allLayers = 0xFF;
 
 		public abstract void StepLogic();
+		public virtual void SeeObject(Transform other) {}
 
 		// Use this for initialization
 		void Start () {
 			player = GetComponent<Player> ();
+			
+			SphereCollider sphere = GetComponent<SphereCollider> ();
+			sphere.isTrigger = true;
+			sphere.radius = visibleRadius;
 		}
 		
 		// Update is called once per frame
@@ -70,30 +77,16 @@ namespace Stuff {
 				currAngle -= amt;
 			}
 		}
-		
-		public Transform GetNearestVisibleThing(int layerMask = allLayers) {
-			RaycastHit[] hits = Physics.SphereCastAll (transform.position, visibleRadius, transform.up, Mathf.Infinity, layerMask);
-			Transform nearest = null;
-			float nearestDist = visibleRadius;
-			foreach (RaycastHit hit in hits) {
-				if(hit.transform == this.transform) {
-					continue;
-				}
 
-				Debug.Log ("We are seeing: "+hit.transform.name);
-				Vector3 dir = hit.transform.position - transform.position;
-				Vector3 normDir = Vector3.Normalize (dir)*1.0f;
-				RaycastHit rayHit;
-				Debug.DrawLine (transform.position, transform.position+dir, Color.red);
-				if(Physics.Raycast (transform.position + normDir, dir, out rayHit, visibleRadius)) {
-					if (dir.magnitude <= nearestDist && rayHit.transform == hit.transform) {
-						nearestDist = dir.magnitude;
-						nearest = rayHit.transform;
-					}
-				}
+		public void OnTriggerStay(Collider other) {
+			RaycastHit hit;
+			Vector3 dir = other.transform.position - transform.position;
+			Color c = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
+			Physics.Raycast (transform.position, dir, out hit);
+			Debug.DrawLine (transform.position, hit.collider.transform.position, c);
+			if(hit.collider == other) {
+				SeeObject (other.transform);
 			}
-
-			return nearest;
 		}
 		
 		public bool IsBlocked(int layerMask, Vector3 inDir, float clearance = 0.51f) {
@@ -152,6 +145,10 @@ namespace Stuff {
 		
 		public bool IsMoved() {
 			return moveTime <= 0.0f;
+		}
+
+		public static bool LayersContain(int mask, GameObject obj) {
+			return (mask & obj.layer) > 0;
 		}
 	}
 }
