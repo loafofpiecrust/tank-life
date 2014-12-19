@@ -12,7 +12,8 @@ namespace Stuff {
 		internal bool stayingOut;
 		//****************
 		internal static int levelCount=1;
-		
+
+		// The return is true if this pickup is to be destroyed after
 		internal abstract bool DoEffect(Player p);
 		
 		internal virtual void Drop() {
