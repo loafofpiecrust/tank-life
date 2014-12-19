@@ -26,7 +26,7 @@ namespace Stuff {
 			Debug.Log("collided");
 
 			Player p = col.GetComponent<Player>();
-			if (!p){
+			if (!p || col.isTrigger){
 				return;
 			}
 			Debug.Log("Player received.");

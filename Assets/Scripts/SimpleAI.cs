@@ -6,7 +6,7 @@ public class SimpleAI : AI {
 
 	private bool wallOnRight = false;
 	private float nearestPlayerDist = 100.0f;
-	private Player nearestPlayer = null;
+	private Vector3 nearestPlayer = Vector3.zero;
 
 	public override void StepLogic() {
 		rigidbody.inertiaTensor = new Vector3(1, 1, 1);
@@ -44,22 +44,24 @@ public class SimpleAI : AI {
 			wallOnRight = false;
 		}
 
-		if (nearestPlayer) {
-			Debug.Log ("VISIBLE PLAYER!! at "+nearestPlayer.transform.position);
-			TurnCannonTo (nearestPlayer.transform.position);
+		if (nearestPlayer != Vector3.zero) {
+			Debug.Log ("VISIBLE PLAYER!! at "+nearestPlayer);
+			TurnCannonTo (nearestPlayer);
 			player.FireCannon ();
-			nearestPlayer = null;
+			nearestPlayer = Vector3.zero;
 		}
 	}
 
 	public override void SeeObject(Transform other) {
-		Player pl = other.GetComponent<Player> ();
-		if (pl) {
-			Debug.Log ("we see a player");
-			if(Vector3.Distance (transform.position, other.position) < nearestPlayerDist) {
-				Debug.Log ("NEAREST VISIBLE PLAYER IS AT "+other.position);
-				nearestPlayer = other.GetComponent<Player>();
-			}
+		if (!other.GetComponent<Player> ())
+			return;
+		
+		Debug.Log ("we see a player");
+		float dist = Vector3.Distance (transform.position, other.position);
+		if(dist < nearestPlayerDist) {
+			Debug.Log ("NEAREST VISIBLE PLAYER IS AT "+other.position);
+			nearestPlayer = other.position;
+			nearestPlayerDist = dist;
 		}
 	}
 
@@ -69,6 +71,7 @@ public class SimpleAI : AI {
 			float turnAngle = 20;
 			MoveBackwards (0.25f);
 			if(!IsBlocked (wallsLayer, -transform.right)) {
+				Debug.Log ("turning left");
 				Turn(-turnAngle);
 			}
 			else {

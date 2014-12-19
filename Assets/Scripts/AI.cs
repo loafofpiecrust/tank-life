@@ -23,11 +23,11 @@ namespace Stuff {
 		private float currCannonAngle = 0.0f;
 		private float cannonTurnTime = 0.0f;
 
-		protected static int playersLayer = LayerMask.GetMask ("Player");
-		protected const int wallsLayer = 1 << 9;
-		protected const int pickupsLayer = 1 << 8;
-		protected const int goalsLayer = 1 << 11;
-		protected const int allLayers = 0xFF;
+		protected static readonly int playersLayer = LayerMask.GetMask ("Player");
+		protected static readonly int wallsLayer = LayerMask.GetMask ("Wall");
+		protected static readonly int pickupsLayer = LayerMask.GetMask ("Pickup");
+		protected static readonly int goalsLayer = LayerMask.GetMask ("Win");
+		protected static readonly int allLayers = 0xFF;
 
 		public abstract void StepLogic();
 		public virtual void SeeObject(Transform other) {}
@@ -78,7 +78,7 @@ namespace Stuff {
 			}
 		}
 
-		public void OnTriggerStay(Collider other) {
+		private void OnTriggerStay(Collider other) {
 			RaycastHit hit;
 			Vector3 dir = other.transform.position - transform.position;
 			Color c = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
@@ -87,6 +87,10 @@ namespace Stuff {
 			if(hit.collider == other) {
 				SeeObject (other.transform);
 			}
+		}
+
+		private void OnTriggerExit(Collider other) {
+
 		}
 		
 		public bool IsBlocked(int layerMask, Vector3 inDir, float clearance = 0.51f) {
@@ -99,12 +103,18 @@ namespace Stuff {
 		}
 
 		
-		public void MoveForward(float time) {
+		public void MoveForward(float time = float.NaN) {
+			if (float.IsNaN(time)) {
+				time = stepLength;
+			}
 			currSpeed = player.moveSpeed;
 			moveTime = time;
 		}
 		
-		public void MoveBackwards(float time) {
+		public void MoveBackwards(float time = float.NaN) {
+			if (float.IsNaN(time)) {
+				time = stepLength;
+			}
 			currSpeed = -player.moveSpeed;
 			moveTime = time;
 		}
