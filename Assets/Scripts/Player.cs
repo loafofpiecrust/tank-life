@@ -29,7 +29,7 @@ namespace Stuff {
 
 		public GameObject bullet;
 
-		private float bulletSpeed = 100.0f;
+		private float bulletSpeed = 800.0f;
 		internal float bulletForce = 100.0f;
 		private float bulletDamage = 15.0f;
 
@@ -106,7 +106,8 @@ namespace Stuff {
 		}
 
 		internal void Die(){
-			inv.GetComponentInChildren<Flag>().Drop ();
+			Flag f = inv.GetComponentInChildren<Flag> ();
+			if(f) f.Drop ();
 			Implode ();
 			Destroy(this.gameObject, 3.0f);
 		}
