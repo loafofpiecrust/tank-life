@@ -23,20 +23,18 @@ namespace Stuff {
 
 		internal override bool DoEffect (Player p) {
 			Debug.Log ("DOING THINGS!");
-			bool jobsDone = false;
 			stayingAlive = true;
 
-			if ((p.GetComponentInChildren<Flag> () is Flag
-					&& p.flags >= minimumFlagsRequired)
-					&& p.neededWins <= 1
-					&& jobsDone) {
+			if ((p.flags >= minimumFlagsRequired)
+					&& p.neededWins <= 1) {
 					Debug.Log ("You Win");
 					Application.LoadLevel ("Lv" + (1 + levelCount));
-			} else if (p.GetComponentInChildren<Flag> () is Flag
-					&& p.flags >= minimumFlagsRequired) {
+
+			} else if (p.flags >= minimumFlagsRequired) {
 					stayingOut = true;
 					p.neededWins -= 1;
 					Debug.Log ("You need more wins");
+
 			} else {
 					stayingOut = true;
 					Debug.Log ("else?");
