@@ -22,9 +22,10 @@ namespace ScottAI
 			{
 				Vector3 left = transform.localToWorldMatrix.MultiplyVector(Vector3.left);
 				Vector3 right = transform.localToWorldMatrix.MultiplyVector(Vector3.right);
-				if(IsBlocked(wallsLayer,transform.up)
-				   || IsBlocked (wallsLayer,left,1.0f)
-				   || IsBlocked (wallsLayer,right,1.0f))
+				if(IsBlocked(wallsLayer,transform.up, 3.0f)
+				   || IsBlocked (wallsLayer,left)
+				   || IsBlocked (wallsLayer,right)
+				  )
 				{
 					StopMoving();
 					if(rigidbody.velocity.magnitude <= 0.01f)
@@ -46,7 +47,7 @@ namespace ScottAI
 			//We only see ourselves
 			if(player == transform)
 				return;
-				
+			Debug.Log ("We see a player");
 			//nearestPlayer = player.transform.position;
 			Vector3 direction =  player.transform.position - transform.position;
 			if(!IsBlocked(wallsLayer, direction, direction.magnitude))

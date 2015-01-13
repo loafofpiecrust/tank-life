@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 
 namespace Stuff {
@@ -15,7 +16,8 @@ namespace Stuff {
 		
 		protected Player player;
 
-		
+		protected List<Player> players;
+
 		private float currSpeed = 0.0f;
 		private float moveTime = 0.0f;
 		private float currAngle = 0.0f;
@@ -31,7 +33,9 @@ namespace Stuff {
 
 		public abstract void StepLogic();
 		public virtual void StartSeeObject(Transform other) {}
-		public virtual void SeeObject(Transform other) {}
+		public virtual void SeeObject(Transform other) {
+			Debug.Log ("seeing object " + other.name);
+		}
 		public virtual void StopSeeObject(Transform other) {}
 
 		// Use this for initialization
@@ -91,8 +95,18 @@ namespace Stuff {
 			}
 		}
 
+		private void OnTriggerEnter(Collider other) {
+			Player p = other.GetComponent<Player> ();
+			if (p) {
+				players.Add (p);
+			}
+		}
+
 		private void OnTriggerExit(Collider other) {
-			
+			Player p = other.GetComponent<Player> ();
+			if (p) {
+				players.Find((Player obj) => obj == p);
+			}
 		}
 		
 		public bool IsBlocked(int layerMask, Vector3 inDir, float dist = 1.0f, float clearance = 0.51f) {
