@@ -10,7 +10,7 @@ namespace Stuff {
 		public float stepLength = 0.1f;
 		private float currStep = 0.0f;
 		
-		public float visibleRadius = 10.0f;
+		public float visibleRadius = 25.0f;
 		public float dangerRadius = 1.0f;
 		
 		protected Player player;
@@ -27,10 +27,12 @@ namespace Stuff {
 		protected static readonly int wallsLayer = LayerMask.GetMask ("Wall");
 		protected static readonly int pickupsLayer = LayerMask.GetMask ("Pickup");
 		protected static readonly int goalsLayer = LayerMask.GetMask ("Win");
-		protected static readonly int allLayers = 0xFF;
+		protected const int allLayers = 0xFF;
 
 		public abstract void StepLogic();
+		public virtual void StartSeeObject(Transform other) {}
 		public virtual void SeeObject(Transform other) {}
+		public virtual void StopSeeObject(Transform other) {}
 
 		// Use this for initialization
 		void Start () {
@@ -90,16 +92,26 @@ namespace Stuff {
 		}
 
 		private void OnTriggerExit(Collider other) {
-
+			
 		}
 		
-		public bool IsBlocked(int layerMask, Vector3 inDir, float clearance = 0.51f) {
+		public bool IsBlocked(int layerMask, Vector3 inDir, float dist = 1.0f, float clearance = 0.51f) {
+			dist = Mathf.Min (dist, visibleRadius);
 			Vector3 startBase = transform.position + (inDir * clearance);
 			Vector3 across = Vector3.Cross (inDir, transform.forward) * clearance;
 			Vector3 start1 = startBase + across;
 			Vector3 start2 = startBase - across;
-			Debug.DrawLine(startBase, startBase+(inDir*dangerRadius), Color.green);
-			return Physics.Raycast (start1, inDir, dangerRadius, layerMask) || Physics.Raycast (start2, inDir, dangerRadius, layerMask);
+			Debug.DrawLine(startBase, startBase+(inDir*dist), Color.green);
+			return Physics.Raycast (start1, inDir, dist, layerMask) || Physics.Raycast (start2, inDir, dist, layerMask);
+		}
+
+		public RaycastHit Raycast(Vector3 dir, float r = -1.0f, int layerMask = allLayers) {
+			if (r < -0.1f) {
+				r = visibleRadius;
+			}
+			RaycastHit hit;
+			Physics.Raycast (transform.position, dir, out hit, r > visibleRadius? visibleRadius : r, layerMask);
+			return hit;
 		}
 
 		

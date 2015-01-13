@@ -20,20 +20,19 @@ namespace ScottAI
 			}
 			else
 			{
-				Vector3 forward = transform.localToWorldMatrix.MultiplyVector(Vector3.up);
 				Vector3 left = transform.localToWorldMatrix.MultiplyVector(Vector3.left);
 				Vector3 right = transform.localToWorldMatrix.MultiplyVector(Vector3.right);
-				if(IsBlocked(wallsLayer,forward,3.0f)
+				if(IsBlocked(wallsLayer,transform.up)
 				   || IsBlocked (wallsLayer,left,1.0f)
 				   || IsBlocked (wallsLayer,right,1.0f))
 				{
 					StopMoving();
 					if(rigidbody.velocity.magnitude <= 0.01f)
 					{
-						if(!IsBlocked (wallsLayer,left,5.0f))
+						/*if(!IsBlocked (wallsLayer,left,5.0f))
 							Turn(-15);
-						else
-						   Turn(15);
+						else*/
+						   Turn(5);
 					}
 				}
 				else
