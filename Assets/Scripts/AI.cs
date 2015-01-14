@@ -86,6 +86,8 @@ namespace Stuff {
 
 		private void OnTriggerStay(Collider other) {
 			RaycastHit hit;
+			if(other.isTrigger)
+				return;
 			Vector3 dir = other.transform.position - transform.position;
 			Color c = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
 			Physics.Raycast (transform.position, dir, out hit);
