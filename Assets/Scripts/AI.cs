@@ -16,7 +16,7 @@ namespace Stuff {
 		
 		protected Player player;
 
-		protected List<Player> players;
+		protected List<Transform> visibleObjects;
 
 		private float currSpeed = 0.0f;
 		private float moveTime = 0.0f;
@@ -82,30 +82,37 @@ namespace Stuff {
 				transform.Rotate (new Vector3(0.0f, 0.0f, amt));
 				currAngle -= amt;
 			}
+
+			if(visibleObjects.length > 0) {
+				HandleVisibleObjects();
+			}
 		}
 
-		private void OnTriggerStay(Collider other) {
-			RaycastHit hit;
-			Vector3 dir = other.transform.position - transform.position;
-			Color c = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
-			Physics.Raycast (transform.position, dir, out hit);
-			Debug.DrawLine (transform.position, hit.collider.transform.position, c);
-			if(hit.collider == other) {
-				SeeObject (other.transform);
+		private void HandleVisibleObjects() {
+			foreach(Transform obj in visibleObjects) {
+				RaycastHit hit;
+				Vector3 dir = obj.position - transform.position;
+				Color c = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
+				Physics.Raycast (transform.position, dir, out hit);
+				Debug.DrawLine (transform.position, hit.collider.transform.position, c);
+				if(hit.collider == other) {
+					SeeObject (obj);
+				}
 			}
 		}
 
 		private void OnTriggerEnter(Collider other) {
 			Player p = other.GetComponent<Player> ();
+
 			if (p) {
-				players.Add (p);
+				visibleObjects.Add (other.transform);
 			}
 		}
 
 		private void OnTriggerExit(Collider other) {
 			Player p = other.GetComponent<Player> ();
 			if (p) {
-				players.Find((Player obj) => obj == p);
+				visibleObjects.Find((Transform t) => t == other.transform);
 			}
 		}
 		
