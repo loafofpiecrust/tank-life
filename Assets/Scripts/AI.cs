@@ -16,7 +16,7 @@ namespace Stuff {
 		
 		protected Player player;
 
-		protected List<Transform> visibleObjects;
+		protected List<Transform> visibleObjects = new List<Transform>();
 
 		private float currSpeed = 0.0f;
 		private float moveTime = 0.0f;
@@ -44,6 +44,7 @@ namespace Stuff {
 			
 			SphereCollider sphere = GetComponent<SphereCollider> ();
 			sphere.isTrigger = true;
+			sphere.radius = 0.1f;
 			sphere.radius = visibleRadius;
 		}
 		
@@ -83,9 +84,8 @@ namespace Stuff {
 				currAngle -= amt;
 			}
 
-			if(visibleObjects.length > 0) {
-				HandleVisibleObjects();
-			}
+			HandleVisibleObjects();
+
 		}
 
 		private void HandleVisibleObjects() {
@@ -94,26 +94,22 @@ namespace Stuff {
 				Vector3 dir = obj.position - transform.position;
 				Color c = new Color (Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f), Random.Range (0.0f, 1.0f));
 				Physics.Raycast (transform.position, dir, out hit);
-				Debug.DrawLine (transform.position, hit.collider.transform.position, c);
-				if(hit.collider == other) {
+				Debug.DrawLine (transform.position, hit.transform.position, c);
+				if(hit.transform == obj) {
 					SeeObject (obj);
+					Debug.Log ("Seeing obj "+obj.name);
 				}
 			}
 		}
 
 		private void OnTriggerEnter(Collider other) {
-			Player p = other.GetComponent<Player> ();
-
-			if (p) {
-				visibleObjects.Add (other.transform);
+			if (other.GetComponent<Player>() || other.GetComponent<Pickup>()) {
+				visibleObjects.Add(other.transform);
 			}
 		}
 
 		private void OnTriggerExit(Collider other) {
-			Player p = other.GetComponent<Player> ();
-			if (p) {
-				visibleObjects.Find((Transform t) => t == other.transform);
-			}
+			visibleObjects.RemoveAll((Transform t) => t == other.transform);
 		}
 		
 		public bool IsBlocked(int layerMask, Vector3 inDir, float dist = 1.0f, float clearance = 0.51f) {
@@ -165,6 +161,9 @@ namespace Stuff {
 
 		public void TurnTo(float deg) {
 			Turn(deg - transform.eulerAngles.z);
+		}
+		public void TurnTo(Vector3 pos) {
+
 		}
 		public void Turn(float deg) {
 			currAngle = -deg;

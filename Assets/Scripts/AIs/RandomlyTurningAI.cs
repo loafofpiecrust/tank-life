@@ -19,9 +19,7 @@ namespace ScottAI
 				nearestPlayer = Vector3.zero;
 			}
 			else
-			{ 
-				Vector3 left = transform.localToWorldMatrix.MultiplyVector(Vector3.left);
-				Vector3 right = transform.localToWorldMatrix.MultiplyVector(Vector3.right);
+			{
 				if(IsBlocked(wallsLayer,transform.up, 2.0f, .5f))
 				{
 					StopMoving();

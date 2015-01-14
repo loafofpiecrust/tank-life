@@ -41,7 +41,7 @@ namespace Stuff {
 		//Stuff for Moving
 		internal float moveSpeed = 100.0f;
 		internal float maxMoveSpeed = 4.0f;
-		internal float turnSpeed = 100.0f;
+		internal float turnSpeed = 150.0f;
 
 
 		// Use this for initialization
