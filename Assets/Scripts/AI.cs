@@ -163,7 +163,10 @@ namespace Stuff {
 			Turn(deg - transform.eulerAngles.z);
 		}
 		public void TurnTo(Vector3 pos) {
-
+			Vector3 dir = pos - transform.position;
+			dir.z = transform.forward.z;
+			Quaternion rot = Quaternion.LookRotation (dir, transform.up);
+			Turn (transform.eulerAngles.z - rot.eulerAngles.z);
 		}
 		public void Turn(float deg) {
 			currAngle = -deg;
